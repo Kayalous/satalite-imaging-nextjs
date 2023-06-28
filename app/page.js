@@ -6,9 +6,9 @@ import Locations from "./components/screens/Locations";
 import Passes from "./components/screens/Passes";
 import Satalites from "./components/screens/Satalites";
 import Tables from "./components/screens/Table";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useSession, signIn } from "next-auth/react";
-
+import { executeQuery } from "../lib/db";
 export default function Home() {
   const [steps, setSteps] = useState([
     { id: "Step 1", name: "Select Location" },
@@ -101,6 +101,8 @@ export default function Home() {
     setSelectedSatelite(satelite);
   };
 
+  // get server side props
+
   // display the current screen based on the active step
   const displayScreen = () => {
     switch (activeStep) {
@@ -122,11 +124,26 @@ export default function Home() {
           />
         );
       case 2:
-        return <Passes passes={locations} prevStep={prevStep} />;
+        return (
+          <Passes
+            passes={locations}
+            prevStep={prevStep}
+          />
+        );
       case 3:
-        return <Tables table={locations} prevStep={prevStep} />;
+        return (
+          <Tables
+            table={locations}
+            prevStep={prevStep}
+          />
+        );
       default:
-        return <Locations locations={locations} nextStep={nextStep} />;
+        return (
+          <Locations
+            locations={locations}
+            nextStep={nextStep}
+          />
+        );
     }
   };
   if (isLoading) return <div>Loading...</div>;

@@ -3,21 +3,30 @@
 // import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/tailwind-light/theme.css";
 import "./globals.css";
-import { SessionProvider, signOut } from "next-auth/react";
-
+import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Test",
-};
+// export const metadata = {
+//   title: "Test",
+// };
+
 import { signIn } from "next-auth/react";
 
 export default function RootLayout({
   children,
   params: { session, ...params },
 }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+  }, []);
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -32,7 +41,33 @@ export default function RootLayout({
           </div>
         </div>
 
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <SessionProvider session={session}>
+          {isLoading ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-loader-2 animate-spin"
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path
+                  stroke="none"
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path d="M12 3a9 9 0 1 0 9 9" />
+              </svg>
+            </div>
+          ) : (
+            <>{children}</>
+          )}
+        </SessionProvider>
       </body>
     </html>
   );
