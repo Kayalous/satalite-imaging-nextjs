@@ -9,6 +9,9 @@ const nextConfig = {
   //     }
   //     return config;
   //   },
+  // experimentalFeatures: {
+  //   disableQueryShaking: false,
+  // },
 };
 
 module.exports = nextConfig;

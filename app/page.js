@@ -5,10 +5,9 @@ import Steps from "./components/Steps";
 import Locations from "./components/screens/Locations";
 import Passes from "./components/screens/Passes";
 import Satalites from "./components/screens/Satalites";
-import Tables from "./components/screens/Table";
+import Preview from "./components/screens/Preview";
 import { useState, useEffect, use } from "react";
 import { useSession, signIn } from "next-auth/react";
-import { executeQuery } from "../lib/db";
 export default function Home() {
   const [steps, setSteps] = useState([
     { id: "Step 1", name: "Select Location" },
@@ -28,40 +27,40 @@ export default function Home() {
       additional: "4 Satalites",
       satalites: [
         {
-          id: 1,
-          title: "METOP-B",
-          description: "Last pass was 2 hours ago",
-          additional: "1,562 passes",
-          numOfPasses: 1562,
-        },
-        {
-          id: 2,
-          title: "METOP-C",
-          description: "Last pass was 15 minutes ago",
-          additional: "615 passes",
-          numOfPasses: 615,
-        },
-        {
-          id: 3,
+          id: "NOAA18",
           title: "NOAA-18",
           description: "Last pass was 2 hours ago",
           additional: "1,265 passes",
-          numOfPasses: 1265,
+          numOfPasses: 17,
         },
         {
-          id: 4,
+          id: "NOAA19",
           title: "NOAA-19",
           description: "Last pass was 15 minutes ago",
           additional: "615 passes",
-          numOfPasses: 615,
+          numOfPasses: 0,
+        },
+        {
+          id: "METOP-B",
+          title: "METOP-B",
+          description: "Last pass was 2 hours ago",
+          additional: "1,562 passes",
+          numOfPasses: 0,
+        },
+        {
+          id: "METOP-C",
+          title: "METOP-C",
+          description: "Last pass was 15 minutes ago",
+          additional: "615 passes",
+          numOfPasses: 0,
         },
       ],
     },
     {
       id: 2,
       title: "Hawaii",
-      description: "Last scan was 15 minutes ago",
-      additional: "12 Satalites",
+      description: "-",
+      additional: "0 Satalites",
       satalites: [],
     },
   ]);
@@ -101,6 +100,13 @@ export default function Home() {
     setSelectedSatelite(satelite);
   };
 
+  const [selectedPass, setSelectedPass] = useState(null);
+
+  const onSelectedPass = (pass) => {
+    setSelectedPass(pass);
+    nextStep();
+  };
+
   // get server side props
 
   // display the current screen based on the active step
@@ -126,14 +132,15 @@ export default function Home() {
       case 2:
         return (
           <Passes
-            passes={locations}
+            satalite={selectedSatelite}
+            selectPass={onSelectedPass}
             prevStep={prevStep}
           />
         );
       case 3:
         return (
-          <Tables
-            table={locations}
+          <Preview
+            pass={selectedPass}
             prevStep={prevStep}
           />
         );

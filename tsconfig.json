@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -28,8 +24,8 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "lib/auth.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "lib/auth.js",
+    "app/api/passes/route.js"
+  ],
+  "exclude": ["node_modules"]
 }
