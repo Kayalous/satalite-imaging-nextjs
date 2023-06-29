@@ -157,8 +157,9 @@ export default function Home() {
   if (error) return <div>{error.message}</div>;
   else
     return status == "unauthenticated" ? (
-      signIn()
+      signIn("credentials", { callbackUrl: "/" })
     ) : (
+      // signIn()
       <main className="container flex flex-col items-center w-screen min-h-screen gap-10 py-24">
         <Steps
           steps={steps}
