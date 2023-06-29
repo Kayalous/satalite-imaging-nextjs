@@ -56,14 +56,6 @@
         "async": false
       }
     },
-    "(app-client)/./app/layout.js": {
-      "*": {
-        "id": "(sc_client)/./app/layout.js",
-        "name": "*",
-        "chunks": [],
-        "async": false
-      }
-    },
     "(app-client)/./app/undraw_outer_space_re_u9vd.svg": {
       "*": {
         "id": "(sc_client)/./app/undraw_outer_space_re_u9vd.svg",
@@ -99,6 +91,14 @@
     "(app-client)/./node_modules/next/dist/shared/lib/head.js": {
       "*": {
         "id": "(sc_client)/./node_modules/next/dist/shared/lib/head.js",
+        "name": "*",
+        "chunks": [],
+        "async": false
+      }
+    },
+    "(app-client)/./app/layout.js": {
+      "*": {
+        "id": "(sc_client)/./app/layout.js",
         "name": "*",
         "chunks": [],
         "async": false
@@ -267,14 +267,6 @@
       ],
       "async": false
     },
-    "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/layout.js": {
-      "id": "(app-client)/./app/layout.js",
-      "name": "*",
-      "chunks": [
-        "app/layout:static/chunks/app/layout.js"
-      ],
-      "async": false
-    },
     "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/undraw_outer_space_re_u9vd.svg": {
       "id": "(app-client)/./app/undraw_outer_space_re_u9vd.svg",
       "name": "*",
@@ -330,9 +322,21 @@
         "app/page:static/chunks/app/page.js"
       ],
       "async": false
+    },
+    "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/layout.js": {
+      "id": "(app-client)/./app/layout.js",
+      "name": "*",
+      "chunks": [
+        "app/layout:static/chunks/app/layout.js"
+      ],
+      "async": false
     }
   },
   "entryCSSFiles": {
+    "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/page": {
+      "modules": [],
+      "files": []
+    },
     "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/layout": {
       "modules": [
         "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/globals.css",
@@ -342,10 +346,6 @@
       "files": [
         "static/css/app/layout.css"
       ]
-    },
-    "/Users/abdulrhmanelkayal/Documents/work/nextjs/satalite-imaging-nextjs/app/page": {
-      "modules": [],
-      "files": []
     }
   }
 }

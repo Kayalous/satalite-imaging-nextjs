@@ -8,6 +8,8 @@ import Satalites from "./components/screens/Satalites";
 import Preview from "./components/screens/Preview";
 import { useState, useEffect, use } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
   const [steps, setSteps] = useState([
     { id: "Step 1", name: "Select Location" },
@@ -64,6 +66,8 @@ export default function Home() {
       satalites: [],
     },
   ]);
+
+  const { push } = useRouter();
 
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
 
@@ -157,9 +161,13 @@ export default function Home() {
   if (error) return <div>{error.message}</div>;
   else
     return status == "unauthenticated" ? (
-      window.location.replace("/api/auth/signin")
+      // window.location.replace("/api/auth/signin")
+      // signIn("credentials", {
+      //   callbackUrl: "http://localhost:22137",
+      // })
+      // redirect to login page
+      push("/api/auth/signin")
     ) : (
-      // signIn("credentials", { callbackUrl: "localhost:22137" })
       // signIn()
       <main className="container flex flex-col items-center w-screen min-h-screen gap-10 py-24">
         <Steps
