@@ -34,7 +34,11 @@ export default function RootLayout({
         <div className="absolute top-0 left-0 right-0 p-3 bg-white shadow-sm">
           <div className="relative flex justify-end w-full">
             <button
-              onClick={() => signOut()}
+              onClick={() =>
+                signOut({
+                  callbackUrl: "localhost:22137",
+                })
+              }
               className="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Sign out
