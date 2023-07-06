@@ -56,8 +56,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         ...resData,
       });
 
-      console.log(data);
-
       setTimeout(() => {
         setImageUrl(
           constructS3Url(
