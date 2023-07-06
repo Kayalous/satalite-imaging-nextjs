@@ -7,7 +7,7 @@ import { getQSParamFromURL } from "../../../lib/utils";
 
 const prisma = new PrismaClient();
 
-const pageSize = 20;
+const pageSize = 10;
 
 export async function GET(req, res) {
   let skip = getQSParamFromURL("page", req.url)

@@ -6,6 +6,7 @@ import Locations from "./components/screens/Locations";
 import Passes from "./components/screens/Passes";
 import Satalites from "./components/screens/Satalites";
 import Preview from "./components/screens/Preview";
+import SingleError from "./components/screens/SingleError";
 import { useState, useEffect, use } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,8 @@ export default function Home() {
     { id: "Step 1", name: "Select Location" },
     { id: "Step 2", name: "Select Satalite" },
     { id: "Step 3", name: "Select Pass" },
-    { id: "Step 4", name: "Preview" },
+    { id: "Step 4", name: "Select Error" },
+    { id: "Step 5", name: "Preview" },
   ]);
   const { data: session, status, error, isLoading } = useSession();
 
@@ -75,6 +77,10 @@ export default function Home() {
     selectedLocation.satalites[0]
   );
 
+  const [selectedPass, setSelectedPass] = useState(null);
+
+  const [selectedError, setSelectedError] = useState(null);
+
   // set the active step
 
   const onStepChange = (index) => {
@@ -104,10 +110,13 @@ export default function Home() {
     setSelectedSatelite(satelite);
   };
 
-  const [selectedPass, setSelectedPass] = useState(null);
-
   const onSelectedPass = (pass) => {
     setSelectedPass(pass);
+    nextStep();
+  };
+
+  const onSelectedError = (error) => {
+    setSelectedError(error);
     nextStep();
   };
 
@@ -146,30 +155,24 @@ export default function Home() {
           <Preview
             pass={selectedPass}
             prevStep={prevStep}
+            selectError={onSelectedError}
           />
         );
+      case 4:
+        return <SingleError error={selectedError} prevStep={prevStep} />;
       default:
-        return (
-          <Locations
-            locations={locations}
-            nextStep={nextStep}
-          />
-        );
+        return <Locations locations={locations} nextStep={nextStep} />;
     }
   };
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   else
     return status == "unauthenticated" ? (
-      // window.location.replace("/api/auth/signin")
-      // signIn("credentials", {
-      //   callbackUrl: "http://localhost:22137",
-      // })
       // redirect to login page
       push("/api/auth/signin")
     ) : (
       // signIn()
-      <main className="container flex flex-col items-center w-screen min-h-screen gap-10 py-24">
+      <main className="container flex flex-col items-center w-full min-h-screen gap-10 py-24">
         <Steps
           steps={steps}
           activeStep={activeStep}

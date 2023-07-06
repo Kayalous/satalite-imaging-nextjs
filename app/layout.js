@@ -22,7 +22,6 @@ export default function RootLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("hi");
     setTimeout(() => {
       setIsLoading(false);
     }, 800);
@@ -36,7 +35,7 @@ export default function RootLayout({
             <button
               onClick={() =>
                 signOut({
-                  callbackUrl: "http://localhost:22137",
+                  // callbackUrl: "http://localhost:22137",
                 })
               }
               className="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -61,11 +60,7 @@ export default function RootLayout({
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path
-                  stroke="none"
-                  d="M0 0h24v24H0z"
-                  fill="none"
-                />
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M12 3a9 9 0 1 0 9 9" />
               </svg>
             </div>

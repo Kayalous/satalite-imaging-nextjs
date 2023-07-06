@@ -3,7 +3,7 @@ function classNames(...classes) {
 }
 import { useState, useEffect, use } from "react";
 import { constructS3Url } from "../../../lib/utils";
-export default function Preview({ nextStep, prevStep, pass }) {
+export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,7 @@ export default function Preview({ nextStep, prevStep, pass }) {
 
   const calculateFromTo = () => {
     // if (data?.data?.data) {
-    const fromCalc = (page - 1) * 20 + 1;
+    const fromCalc = (page - 1) * 10 + 1;
     setFrom(fromCalc);
 
     const toFactor = data?.data?.data.length ?? 20;
@@ -39,7 +39,24 @@ export default function Preview({ nextStep, prevStep, pass }) {
     const response = await fetch(url);
 
     if (response.ok) {
-      setData(await response.json());
+      let resData = await response.json();
+
+      resData.data.data = resData.data.data.map((item) => {
+        // item.s3_path = constructS3Url(item.s3_path, item.image_name);
+        item = {
+          ID: item.ID,
+          "Pass date": pass.passDate,
+          "Processed date": pass.processedDate,
+          ...item,
+        };
+        return item;
+      });
+
+      setData({
+        ...resData,
+      });
+
+      console.log(data);
 
       setTimeout(() => {
         setImageUrl(
@@ -80,10 +97,10 @@ export default function Preview({ nextStep, prevStep, pass }) {
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
               <h1 className="text-2xl font-bold text-gray-800 text-start">
-                Preview
+                Select Error
               </h1>
               <p className="mt-2 text-sm text-gray-700">
-                Preview for {pass.image_name}'s Errors.
+                {pass.image_name}'s Errors.
               </p>
             </div>
           </div>
@@ -114,11 +131,7 @@ export default function Preview({ nextStep, prevStep, pass }) {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path
-                        stroke="none"
-                        d="M0 0h24v24H0z"
-                        fill="none"
-                      />
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>
@@ -137,7 +150,7 @@ export default function Preview({ nextStep, prevStep, pass }) {
                                         <th
                                           key={idx + "th"}
                                           scope="col"
-                                          className="sticky top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                                          className="sticky whitespace-nowrap top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
                                         >
                                           {key}
                                         </th>
@@ -152,7 +165,13 @@ export default function Preview({ nextStep, prevStep, pass }) {
                             // loop through the data and get the values
                             data?.data?.data
                               ? data?.data?.data.map((pass, idx) => (
-                                  <tr key={idx}>
+                                  <tr
+                                    className="transition duration-150 ease-in-out cursor-pointer hover:bg-gray-50"
+                                    onClick={() => {
+                                      selectError(pass);
+                                    }}
+                                    key={idx}
+                                  >
                                     {/* for each on the following items in the schema create a td  */}
 
                                     {/* 
@@ -183,6 +202,26 @@ export default function Preview({ nextStep, prevStep, pass }) {
                                       )}
                                     >
                                       {pass.ID}
+                                    </td>
+                                    <td
+                                      className={classNames(
+                                        idx !== data?.data?.data.length - 1
+                                          ? "border-b border-gray-200"
+                                          : "",
+                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                                      )}
+                                    >
+                                      {pass["Pass date"]}
+                                    </td>
+                                    <td
+                                      className={classNames(
+                                        idx !== data?.data?.data.length - 1
+                                          ? "border-b border-gray-200"
+                                          : "",
+                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                                      )}
+                                    >
+                                      {pass["Processed date"]}
                                     </td>
                                     <td
                                       className={classNames(

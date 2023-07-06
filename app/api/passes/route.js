@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { PrismaClient } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
 
 import { getQSParamFromURL } from "../../../lib/utils";
 
@@ -10,9 +9,9 @@ const prisma = new PrismaClient();
 const pageSize = 20;
 
 export async function GET(req, res) {
-  let skip = getQSParamFromURL("page", req.url)
-    ? getQSParamFromURL("page", req.url) * pageSize
-    : 0;
+  // let skip = getQSParamFromURL("page", req.url)
+  //   ? getQSParamFromURL("page", req.url) * pageSize
+  //   : 0;
 
   let sat_name = getQSParamFromURL("sat_name", req.url);
 
@@ -26,13 +25,11 @@ export async function GET(req, res) {
     new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
 
   let passes = await prisma.ml_localization.groupBy({
-    by: ["image_name", "error_start_time", "error_end_time"],
+    by: ["image_name", "s3_path"],
     where: {
       sat_name: {
         equals: sat_name,
       },
-      // error_start_time after 2021-01-01
-      // error_end_time before 2021-01-01
       error_start_time: {
         gte: startTime,
       },
@@ -42,8 +39,18 @@ export async function GET(req, res) {
     },
   });
 
-  // imageNames = imageNames.map((obj) => obj.image_name);
+  // const imageNames = passes.map((obj) => obj.image_name);
 
+  // const result = await prisma.ml_localization.findMany({
+  //   take: 1,
+  //   where: {
+  //     image_name: {
+  //       in: imageNames,
+  //     },
+  //   },
+  // });
+
+  // console.log(imageNames, result);
   // const trans = await prisma.$transaction([
   //   prisma.ml_localization.count({
   //     where: {
@@ -73,5 +80,3 @@ export async function GET(req, res) {
     passes,
   });
 }
-
-// export { handler as GET, handler as POST };
