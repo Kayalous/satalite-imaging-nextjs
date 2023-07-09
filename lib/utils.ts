@@ -27,3 +27,43 @@ export function constructS3Url(path, name) {
 
   return "/example.jpeg";
 }
+
+
+export function constructMainEC2Url(path, name) {
+
+  const middle = "level0";
+
+  const ext = "_processed.png";
+
+  // console.log("path", path, "name", name);
+  
+
+  let processedPath = path.replace(name, `${middle}/${name}/${name}${ext}`);
+
+  processedPath = '/' + processedPath;
+
+  return processedPath;
+
+  // return baseUrl + path + middle + path + name + ext;
+
+  // return "/example.jpeg";
+}
+export function constructSubEC2Url(path, name, height = 0, width = 0) {
+
+  const middle = "level0";
+
+  const ext = ".png";
+
+  // console.log("path", path, "name", name);
+  
+
+  let processedPath = path.replace(name, `${middle}/${name}/localized/${name}_${height}_${width}${ext}`);
+
+  processedPath = '/' + processedPath;
+
+  return processedPath;
+
+  // return baseUrl + path + middle + path + name + ext;
+
+  // return "/example.jpeg";
+}

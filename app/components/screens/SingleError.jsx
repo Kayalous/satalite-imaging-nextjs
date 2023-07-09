@@ -2,7 +2,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 import { useState, useEffect, use } from "react";
-import { constructS3Url } from "../../../lib/utils";
+import {
+  constructMainEC2Url,
+  constructS3Url,
+  constructSubEC2Url,
+} from "../../../lib/utils";
 export default function Preview({ nextStep, prevStep, pass, error }) {
   //   const [page, setPage] = useState(1);
   //   const [data, setData] = useState([]);
@@ -79,9 +83,16 @@ export default function Preview({ nextStep, prevStep, pass, error }) {
     // fetchPasses();
 
     setTimeout(() => {
-      setImageUrl(constructS3Url(error.s3_path, error.image_name));
+      setImageUrl(constructMainEC2Url(error.s3_path, error.image_name));
 
-      setErrImageUrl(constructS3Url(error.s3_path, error.original_img));
+      setErrImageUrl(
+        constructSubEC2Url(
+          error.s3_path,
+          error.image_name,
+          error.sub_img_loc_h,
+          error.sub_img_loc_w
+        )
+      );
     }, 300);
   }, []);
 
@@ -104,11 +115,7 @@ export default function Preview({ nextStep, prevStep, pass, error }) {
       <div className="flex items-center justify-between w-full px-4 py-4 sm:px-6">
         <div className="flex items-center flex-1 min-w-0">
           <div className="flex-shrink-0">
-            <img
-              className="w-12 h-12 rounded-full"
-              src={constructS3Url(error.s3_path, error.image_name)}
-              alt=""
-            />
+            <img className="w-12 h-12 rounded-full" src={imageUrl} alt="" />
           </div>
           <div className="flex-1 min-w-0 px-4 md:grid md:grid-cols-2 md:gap-4">
             <div>

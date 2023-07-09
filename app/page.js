@@ -35,14 +35,14 @@ export default function Home() {
           title: "NOAA-18",
           description: "Last pass was 2 hours ago",
           additional: "1,265 passes",
-          numOfPasses: 17,
+          numOfPasses: 4,
         },
         {
           id: "NOAA19",
           title: "NOAA-19",
           description: "Last pass was 15 minutes ago",
           additional: "615 passes",
-          numOfPasses: 0,
+          numOfPasses: 4,
         },
         {
           id: "METOP-B",

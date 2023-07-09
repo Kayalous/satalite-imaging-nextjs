@@ -2,7 +2,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 import { useState, useEffect, use } from "react";
-import { constructS3Url } from "../../../lib/utils";
+import { constructS3Url, constructMainEC2Url } from "../../../lib/utils";
 export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
@@ -57,12 +57,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       });
 
       setTimeout(() => {
-        setImageUrl(
-          constructS3Url(
-            data?.data?.data[0].s3_path,
-            data?.data?.data[0].image_name
-          )
-        );
+        setImageUrl(constructMainEC2Url(pass.s3_path, pass.image_name));
       }, 300);
 
       setLoading(false);

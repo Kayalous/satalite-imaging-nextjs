@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import Placeholder from "../../undraw_outer_space_re_u9vd.svg";
@@ -20,6 +20,10 @@ export default function Locations({
     setSelectedLocation(location);
     onSelectedLocation(location);
   };
+
+  useEffect(() => {
+    onSelectedLocation(selectedLocation);
+  }, []);
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">

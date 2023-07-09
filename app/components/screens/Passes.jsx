@@ -250,7 +250,7 @@ export default function Locations({
                               idx !== displayData.length - 1
                                 ? "border-b border-gray-200"
                                 : "",
-                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8 overflow-ellipsis line-clamp-1 max-w-[720px]"
+                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8 overflow-ellipsis line-clamp-1"
                             )}
                           >
                             {pass.s3_path}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import Placeholder from "../../undraw_outer_space_re_u9vd.svg";
@@ -7,15 +7,29 @@ import Image from "next/image";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function Satalites({ satalites = [], nextStep, prevStep }) {
+export default function Satalites({
+  satalites = [],
+  nextStep,
+  prevStep,
+  onSelectedSatelite,
+}) {
   const [selectedSatalite, setSelectedSatalite] = useState(satalites[0]);
+
+  const handleSelectedSatelite = (satalite) => {
+    setSelectedSatalite(satalite);
+    onSelectedSatelite(satalite);
+  };
+
+  useEffect(() => {
+    onSelectedSatelite(selectedSatalite);
+  }, []);
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
       <div className="flex flex-1 px-4 py-5 sm:p-6">
         <RadioGroup
           value={selectedSatalite}
-          onChange={setSelectedSatalite}
+          onChange={handleSelectedSatelite}
           className="flex flex-col flex-1"
         >
           <RadioGroup.Label className="text-2xl font-bold text-gray-800 text-start">
