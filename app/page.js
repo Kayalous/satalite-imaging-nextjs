@@ -47,14 +47,14 @@ export default function Home() {
         {
           id: "METOP-B",
           title: "METOP-B",
-          description: "Last pass was 2 hours ago",
+          description: "Never scanned",
           additional: "1,562 passes",
           numOfPasses: 0,
         },
         {
           id: "METOP-C",
           title: "METOP-C",
-          description: "Last pass was 15 minutes ago",
+          description: "Never scanned",
           additional: "615 passes",
           numOfPasses: 0,
         },
