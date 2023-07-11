@@ -57,7 +57,7 @@ export function constructSubEC2Url(path, name, height = 0, width = 0) {
   // console.log("path", path, "name", name);
   
 
-  let processedPath = path.replace(name, `${middle}/${name}/localized/${name}_${height}_${width}${ext}`);
+  let processedPath = path.replace(name, `${middle}/${name}/localized_processed/${name}_${height}_${width}${ext}`);
 
   processedPath = '/' + processedPath;
 

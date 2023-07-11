@@ -120,7 +120,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                     <img
                       src={imageUrl}
                       alt="Fixed image"
-                      className="object-cover w-full max-w-md overflow-hidden rounded-sm"
+                      className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
                     />
                   </div>
                 ) : null}
