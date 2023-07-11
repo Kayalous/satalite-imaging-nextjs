@@ -33,7 +33,7 @@ export default function Satalites({
           className="flex flex-col flex-1"
         >
           <RadioGroup.Label className="text-2xl font-bold text-gray-800 text-start">
-            Select a satalite
+            Select a satellite
           </RadioGroup.Label>
 
           {satalites.length > 0 ? (
@@ -100,7 +100,7 @@ export default function Satalites({
           ) : (
             <div className="flex flex-col items-center justify-center flex-1 gap-10 h-96">
               <p className="text-lg font-bold text-center text-gray-600">
-                No satalites here
+                No satellites here
               </p>
               <Image
                 src={Placeholder}

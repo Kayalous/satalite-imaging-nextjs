@@ -45,8 +45,23 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         // item.s3_path = constructS3Url(item.s3_path, item.image_name);
         item = {
           ID: item.ID,
+          s3_path: item.s3_path,
+          image_name: item.image_name,
+          // original_img: item.original_img,
           "Pass date": pass.passDate,
           "Processed date": pass.processedDate,
+          error_type: item.error_type,
+          error_start_time: item.error_start_time,
+          error_end_time: item.error_end_time,
+          sub_img_loc_h: item.sub_img_loc_h,
+          sub_img_loc_w: item.sub_img_loc_w,
+          num_errors_raw: item.num_errors_raw,
+          sub_img_error_start_pix: item.sub_img_error_start_pix,
+          sub_img_error_end_pix: item.sub_img_error_end_pix,
+          pic_size_h_pix: item.pic_size_h_pix,
+          pic_size_w_pix: item.pic_size_w_pix,
+          sub_img_count_h: item.sub_img_count_h,
+          sub_img_count_w: item.sub_img_count_w,
           ...item,
         };
         return item;
@@ -165,27 +180,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                     }}
                                     key={idx}
                                   >
-                                    {/* for each on the following items in the schema create a td  */}
-
-                                    {/* 
-
-                                ID                      Int       @id @default(autoincrement())
-  image_name              String?   @db.VarChar(100)
-  error_type              String?   @db.VarChar(100)
-  pic_size_h_pix          Int?
-  pic_size_w_pix          Int?
-  sub_img_count_h         Int?
-  sub_img_count_w         Int?
-  sub_img_loc_h           Int?
-  sub_img_loc_w           Int?
-  num_errors_raw          Int?
-  sub_img_error_start_pix String?   @db.Text
-  sub_img_error_end_pix   String?   @db.Text
-  error_start_time        DateTime? @db.DateTime(0)
-  error_end_time          DateTime? @db.DateTime(0)
-                                
-                                */}
-
                                     <td
                                       className={classNames(
                                         idx !== data?.data?.data.length - 1
@@ -234,7 +228,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                         "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                                       )}
                                     >
-                                      {pass.pic_size_h_pix}
+                                      {pass.error_start_time}
                                     </td>
                                     <td
                                       className={classNames(
@@ -244,27 +238,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                         "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                                       )}
                                     >
-                                      {pass.pic_size_w_pix}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_count_h}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_count_w}
+                                      {pass.error_end_time}
                                     </td>
                                     <td
                                       className={classNames(
@@ -324,7 +298,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                         "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                                       )}
                                     >
-                                      {pass.error_start_time}
+                                      {pass.pic_size_h_pix}
                                     </td>
                                     <td
                                       className={classNames(
@@ -334,7 +308,27 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                         "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                                       )}
                                     >
-                                      {pass.error_end_time}
+                                      {pass.pic_size_w_pix}
+                                    </td>
+                                    <td
+                                      className={classNames(
+                                        idx !== data?.data?.data.length - 1
+                                          ? "border-b border-gray-200"
+                                          : "",
+                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                                      )}
+                                    >
+                                      {pass.sub_img_count_h}
+                                    </td>
+                                    <td
+                                      className={classNames(
+                                        idx !== data?.data?.data.length - 1
+                                          ? "border-b border-gray-200"
+                                          : "",
+                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                                      )}
+                                    >
+                                      {pass.sub_img_count_w}
                                     </td>
 
                                     {/* <td

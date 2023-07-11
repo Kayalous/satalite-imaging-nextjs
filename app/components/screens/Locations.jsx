@@ -71,7 +71,7 @@ export default function Locations({
                             as="span"
                             className="mt-6 text-sm font-medium text-gray-900"
                           >
-                            {location.satalites.length} Satalites
+                            {location.satalites.length} Satellites
                           </RadioGroup.Description>
                         </span>
                       </span>

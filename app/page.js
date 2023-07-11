@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [steps, setSteps] = useState([
     { id: "Step 1", name: "Select Location" },
-    { id: "Step 2", name: "Select Satalite" },
+    { id: "Step 2", name: "Select Satellite" },
     { id: "Step 3", name: "Select Pass" },
     { id: "Step 4", name: "Select Error" },
     { id: "Step 5", name: "Preview" },
@@ -28,7 +28,7 @@ export default function Home() {
       id: 1,
       title: "AOML",
       description: "Last scan was 2 hours ago",
-      additional: "4 Satalites",
+      additional: "4 Satellites",
       satalites: [
         {
           id: "NOAA18",
