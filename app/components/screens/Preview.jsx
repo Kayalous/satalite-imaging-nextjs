@@ -72,7 +72,12 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       });
 
       setTimeout(() => {
-        setImageUrl(constructMainEC2Url(pass.s3_path, pass.image_name));
+        setImageUrl(
+          constructMainEC2Url(
+            data?.data?.data[0].local_folder_name,
+            pass.image_name
+          )
+        );
       }, 300);
 
       setLoading(false);

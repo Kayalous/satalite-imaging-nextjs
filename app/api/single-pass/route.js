@@ -41,6 +41,8 @@ export async function GET(req, res) {
     data: trans[1],
   };
 
+  console.log(data.data);
+
   return NextResponse.json({
     data,
   });

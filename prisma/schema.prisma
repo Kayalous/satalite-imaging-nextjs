@@ -23,6 +23,7 @@ model ml_localization {
   error_start_time        DateTime? @db.DateTime(0)
   error_end_time          DateTime? @db.DateTime(0)
   s3_path                 String?   @db.VarChar(100)
-  original_img            String?   @db.VarChar(50)
-  sat_name                String?   @db.VarChar(50)
+  original_img            String?   @db.VarChar(100)
+  sat_name                String?   @db.VarChar(100)
+  local_folder_name       String?   @db.VarChar(2000)
 }
