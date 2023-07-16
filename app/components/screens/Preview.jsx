@@ -79,11 +79,11 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
 
       setTimeout(() => {
         const url = constructMainEC2Url(
-          data?.data?.data[0].local_folder_name,
+          resData?.data?.data[0].local_folder_name,
           pass.image_name
         );
         setImageUrl(url);
-      }, 300);
+      }, 800);
 
       setLoading(false);
     } else {
