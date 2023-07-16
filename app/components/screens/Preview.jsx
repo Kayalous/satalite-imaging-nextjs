@@ -8,7 +8,13 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const excludeKeys = ["image_name", "s3_path", "original_img", "sat_name"];
+  const excludeKeys = [
+    "image_name",
+    "s3_path",
+    "original_img",
+    "sat_name",
+    "local_folder_name",
+  ];
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(20);
   const [imageUrl, setImageUrl] = useState(null);
@@ -72,12 +78,11 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       });
 
       setTimeout(() => {
-        setImageUrl(
-          constructMainEC2Url(
-            data?.data?.data[0].local_folder_name,
-            pass.image_name
-          )
+        const url = constructMainEC2Url(
+          data?.data?.data[0].local_folder_name,
+          pass.image_name
         );
+        setImageUrl(url);
       }, 300);
 
       setLoading(false);
@@ -120,15 +125,13 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
           <div className="flow-root mt-8">
             <div className="-mx-4">
               <div className="relative inline-block w-full max-w-full py-2 align-middle">
-                {imageUrl ? (
-                  <div className="container flex items-center justify-center py-5 mx-auto">
-                    <img
-                      src={imageUrl}
-                      alt="Fixed image"
-                      className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
-                    />
-                  </div>
-                ) : null}
+                <div className="container flex items-center justify-center py-5 mx-auto">
+                  <img
+                    src={imageUrl}
+                    alt="Fixed image"
+                    className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
+                  />
+                </div>
 
                 {loading ? (
                   <div className="absolute inset-0 z-50 flex items-center justify-center w-full h-full pt-20 bg-white">
