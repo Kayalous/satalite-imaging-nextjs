@@ -125,13 +125,15 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
           <div className="flow-root mt-8">
             <div className="-mx-4">
               <div className="relative inline-block w-full max-w-full py-2 align-middle">
-                <div className="container flex items-center justify-center py-5 mx-auto">
-                  <img
-                    src={imageUrl}
-                    alt="Fixed image"
-                    className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
-                  />
-                </div>
+                {imageUrl ? (
+                  <div className="container flex items-center justify-center py-5 mx-auto">
+                    <img
+                      src={imageUrl}
+                      alt="Fixed image"
+                      className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
+                    />
+                  </div>
+                ) : null}
 
                 {loading ? (
                   <div className="absolute inset-0 z-50 flex items-center justify-center w-full h-full pt-20 bg-white">
