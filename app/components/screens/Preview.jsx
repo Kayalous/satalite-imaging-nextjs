@@ -3,6 +3,7 @@ function classNames(...classes) {
 }
 import { useState, useEffect, use } from "react";
 import { constructS3Url, constructMainEC2Url } from "../../../lib/utils";
+import moment from "moment";
 export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
@@ -47,8 +48,25 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     if (response.ok) {
       let resData = await response.json();
 
-      resData.data.data = resData.data.data.map((item) => {
+      resData.data.data = resData.data.data.map((item, index) => {
         // item.s3_path = constructS3Url(item.s3_path, item.image_name);
+
+        let error_start_time = moment(
+          item.error_start_time,
+          "YYYY-MM-DD-HH:mm:ss"
+        ).format("DD/MM/YYYY h:mm:ss a");
+
+        let error_end_time = moment(
+          item.error_end_time,
+          "YYYY-MM-DD-HH:mm:ss"
+        ).format("DD/MM/YYYY h:mm:ss a");
+
+        console.log(error_start_time, error_end_time);
+
+        //@ts-ignore
+        resData.data.data[index]["error_start_time"] = error_start_time;
+        //@ts-ignore
+        resData.data.data[index]["error_end_time"] = error_end_time;
         item = {
           ID: item.ID,
           s3_path: item.s3_path,
@@ -57,8 +75,8 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
           "Pass date": pass.passDate,
           "Processed date": pass.processedDate,
           error_type: item.error_type,
-          error_start_time: item.error_start_time,
-          error_end_time: item.error_end_time,
+          error_start_time: error_start_time,
+          error_end_time: error_end_time,
           sub_img_loc_h: item.sub_img_loc_h,
           sub_img_loc_w: item.sub_img_loc_w,
           num_errors_raw: item.num_errors_raw,

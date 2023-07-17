@@ -56,18 +56,30 @@ export default function Locations({
           "DD/MM/YYYY h:mm a"
         );
 
-        console.log(passDate, processedDate);
+        let error_start_time = moment(
+          pass.error_start_time,
+          "YYYY-MM-DD-HH:mm:ss"
+        ).format("DD/MM/YYYY h:mm a");
+
+        let error_end_time = moment(
+          pass.error_end_time,
+          "YYYY-MM-DD-HH:mm:ss"
+        ).format("DD/MM/YYYY h:mm a");
+
+        console.log(error_start_time, error_end_time);
+
+        pass.error_start_time = error_start_time;
+
+        pass.error_end_time = error_end_time;
 
         tempData.push({
-          ...pass,
           passDate: passDate,
           processedDate: processedDate,
+          ...pass,
         });
       });
 
       setDisplayData(tempData);
-
-      console.log(displayData);
 
       setData(passes);
 

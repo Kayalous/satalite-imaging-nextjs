@@ -35,7 +35,7 @@ export default function Home() {
           title: "NOAA-18",
           description: "Last pass was 2 hours ago",
           additional: "1,265 passes",
-          numOfPasses: 4,
+          numOfPasses: 6,
         },
         {
           id: "NOAA19",
