@@ -18,7 +18,7 @@ export default function Locations({
     new Date("1/1/2021").toISOString().split("T")[0]
   );
   const [endDate, setEndDate] = useState(
-    new Date("1/1/2023").toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0]
   );
 
   const fetchPasses = async () => {
