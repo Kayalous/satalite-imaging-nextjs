@@ -17,7 +17,7 @@ export async function GET(req, res) {
   });
 
   const client = new S3Client({
-    // region: "us-east-1",
+    region: "us-east-1",
   });
 
   const response = await client.send(command);
