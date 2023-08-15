@@ -61,7 +61,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
           "YYYY-MM-DD-HH:mm:ss"
         ).format("DD/MM/YYYY h:mm:ss a");
 
-        console.log(error_start_time, error_end_time);
+        // console.log(error_start_time, error_end_time);
 
         //@ts-ignore
         resData.data.data[index]["error_start_time"] = error_start_time;
@@ -91,13 +91,15 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         return item;
       });
 
+      // console.log(resData);
+
       setData({
         ...resData,
       });
 
       setTimeout(() => {
         const url = constructMainEC2Url(
-          resData?.data?.data[0].local_folder_name,
+          resData?.data?.data[0].s3_path,
           pass.image_name
         );
         setImageUrl(url);

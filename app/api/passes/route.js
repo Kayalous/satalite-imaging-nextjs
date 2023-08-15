@@ -25,7 +25,7 @@ export async function GET(req, res) {
     new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
 
   let passes = await prisma.ml_localization.groupBy({
-    by: ["image_name", "s3_path"],
+    by: ["image_name", "s3_path", "Pass_Date"],
     where: {
       sat_name: {
         equals: sat_name,
@@ -38,43 +38,6 @@ export async function GET(req, res) {
       },
     },
   });
-
-  // const imageNames = passes.map((obj) => obj.image_name);
-
-  // const result = await prisma.ml_localization.findMany({
-  //   take: 1,
-  //   where: {
-  //     image_name: {
-  //       in: imageNames,
-  //     },
-  //   },
-  // });
-
-  // console.log(imageNames, result);
-  // const trans = await prisma.$transaction([
-  //   prisma.ml_localization.count({
-  //     where: {
-  //       image_name: {
-  //         in: imageNames,
-  //       },
-  //     },
-  //   }),
-
-  //   prisma.ml_localization.findMany({
-  //     skip: skip,
-  //     take: pageSize,
-  //     where: {
-  //       image_name: {
-  //         in: imageNames,
-  //       },
-  //     },
-  //   }),
-  // ]);
-
-  // const data = {
-  //   count: trans[0],
-  //   data: trans[1],
-  // };
 
   return NextResponse.json({
     passes,

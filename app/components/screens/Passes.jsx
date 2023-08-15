@@ -43,12 +43,14 @@ export default function Locations({
       // await response.json then execute the following
       let passes = await response.json();
 
+      // console.log(passes);
+
       const tempData = [];
 
       passes.passes.forEach((pass) => {
         let parts = pass.image_name.split("_");
 
-        let passDate = moment(parts[0].slice(0, -3), "YYYYMMDDHHmmss").format(
+        let passDate = moment(pass.Pass_Date, "YYYY-MM-DD HH:mm:ss").format(
           "DD/MM/YYYY h:mm a"
         );
 
@@ -66,8 +68,6 @@ export default function Locations({
           "YYYY-MM-DD-HH:mm:ss"
         ).format("DD/MM/YYYY h:mm a");
 
-        console.log(error_start_time, error_end_time);
-
         pass.error_start_time = error_start_time;
 
         pass.error_end_time = error_end_time;
@@ -83,20 +83,6 @@ export default function Locations({
 
       setData(passes);
 
-      // await response.json().passes?.forEach((pass) => {
-      //   let parts = pass.image_name.split("_");
-
-      //   let passDate = new Date(parts[0].slice(0, -3));
-
-      //   let processedDate = new Date(parts[1]);
-
-      //   console.log(
-      //     parts[0].slice(0, -3),
-      //     parts[1],
-      //     moment(passDate).format("MMMM Do YYYY, h:mm:ss a"),
-      //     moment(processedDate).format("MMMM Do YYYY, h:mm:ss a")
-      //   );
-      // });
       setLoading(false);
     } else {
       setError(await response.json());
@@ -108,10 +94,6 @@ export default function Locations({
     fetchPasses();
 
     let tempData = [];
-
-    // setDisplayData(
-
-    // );
   }, []);
 
   return (

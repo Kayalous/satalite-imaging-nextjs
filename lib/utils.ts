@@ -28,24 +28,32 @@ export function constructS3Url(path, name) {
   return "/example.jpeg";
 }
 
-
 export function constructMainEC2Url(path, name) {
-
   const middle = "level0";
 
-  const ext = "_processed.png";
+  const ext = "_with_localization.png";
 
   // console.log("path", path, "name", name);
 
   // remove the last / from path
 
-  path = path.substring(0, path.length - 1);
+  // path = path.substring(0, path.length - 1);
 
   // remove the first part of the path
 
-  path = path.replace('project/img_class_loc', ``);
-  
-  let processedPath = path.replace(name, `${name}/${name}${ext}`);
+  // path = path.replace("project/img_class_loc", ``);
+
+  // remove the first / from path
+
+  // path = path.substring(1, path.length);
+
+  let processedPath =
+    "/api/assets?path=" +
+    path.replace(name, `${name}/localized_processed/${name}${ext}`);
+
+  // processedPath = processedPath.substring(1, path.length);
+
+  // processedPath = "" + processedPath;
 
   return processedPath;
 
@@ -54,23 +62,30 @@ export function constructMainEC2Url(path, name) {
   // return "/example.jpeg";
 }
 export function constructSubEC2Url(path, name, height = 0, width = 0) {
-
-  const middle = "level0";
+  // const middle = "level0";
 
   const ext = "_processed_with_localization.png";
 
   // console.log("path", path, "name", name);
 
-    // remove the last / from path
+  // remove the last / from path
 
-    path = path.substring(0, path.length - 1);
+  // path = path.substring(0, path.length - 1);
 
-    // remove the first part of the path
-  
-    path = path.replace('project/img_class_loc', ``);
-  
+  // remove the first part of the path
 
-  let processedPath = path.replace(name, `${name}/localized_processed/${name}_${height}_${width}${ext}`);
+  // path = path.replace("project/img_class_loc", ``);
+
+  // remove the first / from path
+
+  // path = path.substring(1, path.length);
+
+  let processedPath =
+    "/api/assets?path=" +
+    path.replace(
+      name,
+      `${name}/localized_processed/${name}_${height}_${width}${ext}`
+    );
 
   return processedPath;
 
