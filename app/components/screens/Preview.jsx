@@ -15,6 +15,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     "original_img",
     "sat_name",
     "local_folder_name",
+    "Pass_Date",
   ];
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(20);
@@ -54,12 +55,12 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         let error_start_time = moment(
           item.error_start_time,
           "YYYY-MM-DD-HH:mm:ss"
-        ).format("DD/MM/YYYY h:mm:ss a");
+        ).format("MM/DD/YYYY h:mm:ss a");
 
         let error_end_time = moment(
           item.error_end_time,
           "YYYY-MM-DD-HH:mm:ss"
-        ).format("DD/MM/YYYY h:mm:ss a");
+        ).format("MM/DD/YYYY h:mm:ss a");
 
         // console.log(error_start_time, error_end_time);
 
@@ -169,7 +170,11 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        stroke="none"
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>

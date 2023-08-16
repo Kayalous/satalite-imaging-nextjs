@@ -51,22 +51,22 @@ export default function Locations({
         let parts = pass.image_name.split("_");
 
         let passDate = moment(pass.Pass_Date, "YYYY-MM-DD HH:mm:ss").format(
-          "DD/MM/YYYY h:mm a"
+          "MM/DD/YYYY h:mm a"
         );
 
         let processedDate = moment(parts[1], "YYYY-MM-DD-HH:mm:ss").format(
-          "DD/MM/YYYY h:mm a"
+          "MM/DD/YYYY h:mm a"
         );
 
         let error_start_time = moment(
           pass.error_start_time,
           "YYYY-MM-DD-HH:mm:ss"
-        ).format("DD/MM/YYYY h:mm a");
+        ).format("MM/DD/YYYY h:mm a");
 
         let error_end_time = moment(
           pass.error_end_time,
           "YYYY-MM-DD-HH:mm:ss"
-        ).format("DD/MM/YYYY h:mm a");
+        ).format("MM/DD/YYYY h:mm a");
 
         pass.error_start_time = error_start_time;
 
@@ -158,7 +158,11 @@ export default function Locations({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        stroke="none"
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>
