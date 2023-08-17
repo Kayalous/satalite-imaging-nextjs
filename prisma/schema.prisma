@@ -26,5 +26,5 @@ model ml_localization {
   original_img            String?   @db.VarChar(100)
   sat_name                String?   @db.VarChar(100)
   local_folder_name       String?   @db.VarChar(2000)
-  Pass_Date               String?   @db.VarChar(100)
+  Pass_Date               DateTime? @db.DateTime(0)
 }

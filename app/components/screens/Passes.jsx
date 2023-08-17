@@ -90,11 +90,26 @@ export default function Locations({
     }
   };
 
+  const applyStartDate = (date) => {
+    setStartDate(new Date(date).toISOString().split("T")[0]);
+    // fetchPasses();
+  };
+  const applyEndDate = (date) => {
+    setEndDate(new Date(date).toISOString().split("T")[0]);
+    // fetchPasses();
+  };
+
   useEffect(() => {
     fetchPasses();
 
     let tempData = [];
   }, []);
+
+  useEffect(() => {
+    fetchPasses();
+
+    let tempData = [];
+  }, [startDate, endDate]);
 
   return (
     <div className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
@@ -119,7 +134,7 @@ export default function Locations({
                     placeholder="Select date start"
                     value={startDate}
                     onChange={(e) => {
-                      setStartDate(e.target.value);
+                      applyStartDate(e.target.value);
                       fetchPasses();
                     }}
                   />
@@ -133,7 +148,7 @@ export default function Locations({
                     placeholder="Select date end"
                     value={endDate}
                     onChange={(e) => {
-                      setEndDate(e.target.value);
+                      applyEndDate(e.target.value);
                       fetchPasses();
                     }}
                   />

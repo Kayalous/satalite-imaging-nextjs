@@ -24,18 +24,26 @@ export async function GET(req, res) {
     new Date(getQSParamFromURL("endTime", req.url)) ??
     new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
 
+  console.log(startTime, endTime);
+
   let passes = await prisma.ml_localization.groupBy({
     by: ["image_name", "s3_path", "Pass_Date"],
     where: {
       sat_name: {
         equals: sat_name,
       },
-      error_start_time: {
-        gte: startTime,
-      },
-      error_end_time: {
-        lte: endTime,
-      },
+      AND: [
+        {
+          Pass_Date: {
+            gte: startTime,
+          },
+        },
+        {
+          Pass_Date: {
+            lte: endTime,
+          },
+        },
+      ],
     },
   });
 
