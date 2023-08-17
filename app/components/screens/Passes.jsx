@@ -54,9 +54,10 @@ export default function Locations({
           "MM/DD/YYYY h:mm a"
         );
 
-        let processedDate = moment(parts[1], "YYYY-MM-DD-HH:mm:ss").format(
-          "MM/DD/YYYY h:mm a"
-        );
+        let processedDate = moment(
+          parts[parts.length - 1],
+          "YYYY-MM-DD-HH:mm:ss"
+        ).format("MM/DD/YYYY h:mm a");
 
         let error_start_time = moment(
           pass.error_start_time,
@@ -109,7 +110,13 @@ export default function Locations({
     fetchPasses();
 
     let tempData = [];
-  }, [startDate, endDate]);
+  }, [startDate]);
+
+  useEffect(() => {
+    fetchPasses();
+
+    let tempData = [];
+  }, [endDate]);
 
   return (
     <div className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
@@ -135,7 +142,6 @@ export default function Locations({
                     value={startDate}
                     onChange={(e) => {
                       applyStartDate(e.target.value);
-                      fetchPasses();
                     }}
                   />
                 </div>
@@ -149,7 +155,6 @@ export default function Locations({
                     value={endDate}
                     onChange={(e) => {
                       applyEndDate(e.target.value);
-                      fetchPasses();
                     }}
                   />
                 </div>
@@ -173,11 +178,7 @@ export default function Locations({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path
-                        stroke="none"
-                        d="M0 0h24v24H0z"
-                        fill="none"
-                      />
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>
