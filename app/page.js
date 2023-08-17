@@ -35,7 +35,7 @@ export default function Home() {
           title: "NOAA-18",
           description: "Last pass was 2 hours ago",
           additional: "1,265 passes",
-          numOfPasses: 6,
+          numOfPasses: 3,
         },
         {
           id: "NOAA19",
@@ -159,9 +159,19 @@ export default function Home() {
           />
         );
       case 4:
-        return <SingleError error={selectedError} prevStep={prevStep} />;
+        return (
+          <SingleError
+            error={selectedError}
+            prevStep={prevStep}
+          />
+        );
       default:
-        return <Locations locations={locations} nextStep={nextStep} />;
+        return (
+          <Locations
+            locations={locations}
+            nextStep={nextStep}
+          />
+        );
     }
   };
   if (isLoading) return <div>Loading...</div>;
