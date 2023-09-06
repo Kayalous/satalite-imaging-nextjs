@@ -49,6 +49,9 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     if (response.ok) {
       let resData = await response.json();
 
+      console.log(resData);
+
+
       resData.data.data = resData.data.data.map((item, index) => {
         // item.s3_path = constructS3Url(item.s3_path, item.image_name);
 
@@ -63,6 +66,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         ).format("MM/DD/YYYY h:mm:ss a");
 
         // console.log(error_start_time, error_end_time);
+
 
         //@ts-ignore
         resData.data.data[index]["error_start_time"] = error_start_time;
@@ -97,6 +101,8 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       setData({
         ...resData,
       });
+
+      console.log(data?.data?.data);
 
       setTimeout(() => {
         const url = constructMainEC2Url(
@@ -187,7 +193,9 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                             {
                               // loop through the data and get the keys
                               data?.data?.data
-                                ? Object.keys(data?.data?.data[0]).map(
+                                ? 
+                                data?.data?.data[0] ?
+                                Object.keys(data?.data?.data[0]).map(
                                     (key, idx) =>
                                       !excludeKeys.includes(key) ? (
                                         <th
@@ -198,7 +206,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                                           {key}
                                         </th>
                                       ) : null
-                                  )
+                                  ) : null
                                 : null
                             }
                           </tr>

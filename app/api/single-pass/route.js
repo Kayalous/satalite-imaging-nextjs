@@ -11,7 +11,7 @@ const pageSize = 10;
 
 export async function GET(req, res) {
   let skip = getQSParamFromURL("page", req.url)
-    ? getQSParamFromURL("page", req.url) * pageSize
+    ? (getQSParamFromURL("page", req.url) - 1) * pageSize
     : 0;
 
   let imageNames = [getQSParamFromURL("image_name", req.url)];
@@ -35,6 +35,7 @@ export async function GET(req, res) {
       },
     }),
   ]);
+
 
   const data = {
     count: trans[0],
