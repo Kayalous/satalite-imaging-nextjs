@@ -45,6 +45,9 @@ export async function GET(req, res) {
         },
       ],
     },
+    orderBy: {
+      Pass_Date: "desc",
+    },
   });
 
   return NextResponse.json({
