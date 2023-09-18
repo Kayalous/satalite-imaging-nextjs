@@ -16,8 +16,10 @@ export function getQSParamFromURL(
 }
 
 export function constructS3Url(path, name) {
-  const baseUrl =
-    "https://s3.us-east-1.amazonaws.com/rfims-ml-addson/stand_alone/";
+  const testBucketName = "rfims-ml-addson";
+  const liveBucketName = "rfims-prototype";
+
+  const baseUrl = `https://s3.us-east-1.amazonaws.com/${liveBucketName}/stand_alone/`;
 
   const middle = "/localized_processed/";
 
