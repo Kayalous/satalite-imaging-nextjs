@@ -9,9 +9,9 @@ const prisma = new PrismaClient();
 import { S3Client, GetObjectCommand, S3 } from "@aws-sdk/client-s3";
 
 export async function GET(req, res) {
-  try {
-    const path = getQSParamFromURL("path", req.url);
+  const path = getQSParamFromURL("path", req.url);
 
+  try {
     const command = new GetObjectCommand({
       Bucket: "rfims-prototype",
       Key: path,
