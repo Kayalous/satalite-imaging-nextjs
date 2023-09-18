@@ -12,12 +12,12 @@ export async function GET(req, res) {
   const path = getQSParamFromURL("path", req.url);
 
   const command = new GetObjectCommand({
-    Bucket: "rfims-ml-addson",
+    Bucket: "rfims-prototype",
     Key: path,
   });
 
   const client = new S3Client({
-    region: "us-east-1",
+    region: "us-gov-west-1",
   });
 
   const response = await client.send(command);
