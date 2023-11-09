@@ -27,11 +27,6 @@ export async function GET(req, res) {
     endTime = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
     endTime.setHours(23, 59, 59, 999);
   }
-  const count = await prisma.$queryRaw`
-  SELECT image_name, s3_path, Pass_Date, COUNT(*) as total
-  FROM ml_localization
-  WHERE sat_name = ${sat_name} AND Pass_Date BETWEEN ${startTime} AND ${endTime}
-  GROUP BY image_name, s3_path, Pass_Date`;
   const trans = await prisma.$transaction([
     prisma.ml_localization.groupBy({
       by: ["image_name", "s3_path", "Pass_Date"],
@@ -58,12 +53,33 @@ export async function GET(req, res) {
         Pass_Date: "desc",
       },
     }),
+    prisma.ml_localization.groupBy({
+      by: ["image_name", "s3_path", "Pass_Date"],
+      where: {
+        sat_name: {
+          equals: sat_name,
+        },
+        AND: [
+          {
+            Pass_Date: {
+              gte: startTime,
+            },
+          },
+          {
+            Pass_Date: {
+              lte: endTime,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        Pass_Date: "desc",
+      },
+    }),
   ]);
 
-  console.log(count);
-
   return NextResponse.json({
-    count: 1,
+    count: trans[1].length,
     passes: trans[0],
   });
 }

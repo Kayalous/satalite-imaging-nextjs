@@ -17,6 +17,7 @@ export default function Locations({
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
 
   const handleSelectedLocation = (location) => {
+    if (!location) return;
     setSelectedLocation(location);
     onSelectedLocation(location);
   };
@@ -41,7 +42,7 @@ export default function Locations({
             <div className="grid grid-cols-1 mt-4 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
               {locations.map((location) => (
                 <RadioGroup.Option
-                  key={location.id}
+                  key={location.title}
                   value={location}
                   className={({ checked, active }) =>
                     classNames(

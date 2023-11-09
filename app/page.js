@@ -49,7 +49,9 @@ export default function Home() {
 
   const [selectedError, setSelectedError] = useState(null);
 
+  const [initialLoading, setInitialLoading] = useState(false);
   const fetchLocationData = async () => {
+    setInitialLoading(true);
     const baseUrl = "/api/locations";
     const locationNames = [];
     locations.forEach((location) => {
@@ -80,10 +82,12 @@ export default function Home() {
 
       setLocations(newLoc);
 
-      setTimeout(() => {
-        setSelectedLocation(locations[0]);
-      }, 100);
+      // setTimeout(() => {
+      setSelectedLocation(newLoc[0]);
+
+      // }, 100);
     }
+    setInitialLoading(false);
   };
 
   useEffect(() => {
@@ -104,7 +108,6 @@ export default function Home() {
     if (selectedError) {
       stepClone[3].breadcrumb = selectedError.image_name;
     }
-    console.log(stepClone);
     setSteps(stepClone);
   }, [selectedLocation, selectedSatelite, selectedPass, selectedError]);
 
@@ -218,7 +221,28 @@ export default function Home() {
           onStepChange={onStepChange}
         />
 
-        {displayScreen()}
+        {initialLoading ? (
+          <div className="flex flex-col flex-1 w-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
+            <div className="flex w-full h-full p-10 space-x-4 bg-white animate-pulse">
+              <div className="flex-1 py-1 space-y-4">
+                <div className="w-3/4 h-12 bg-gray-200 rounded"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="w-5/6 h-4 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+              <div className="flex-1 py-1 space-y-4">
+                <div className="w-3/4 h-12 bg-gray-200 rounded"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded"></div>
+                  <div className="w-5/6 h-4 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          displayScreen()
+        )}
       </main>
     );
 }

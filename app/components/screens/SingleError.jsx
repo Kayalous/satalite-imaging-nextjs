@@ -7,10 +7,12 @@ import {
   constructS3Url,
   constructSubEC2Url,
 } from "../../../lib/utils";
+import MagnifyImage from "../Magnify";
 export default function Preview({ nextStep, prevStep, pass, error }) {
   const [imageUrl, setImageUrl] = useState(null);
   const [errImageUrl, setErrImageUrl] = useState(null);
 
+  const excludeKeys = ["Pass date", "Processed date"];
   useEffect(() => {
     setTimeout(() => {
       setImageUrl(constructMainEC2Url(error.s3_path, error.image_name));
@@ -44,7 +46,11 @@ export default function Preview({ nextStep, prevStep, pass, error }) {
       <div className="flex items-center justify-between w-full px-4 py-4 sm:px-6">
         <div className="flex items-center flex-1 min-w-0">
           <div className="flex-shrink-0">
-            <img className="w-12 h-12 rounded-full" src={imageUrl} alt="" />
+            <img
+              className="w-12 h-12 rounded-full"
+              src={imageUrl}
+              alt=""
+            />
           </div>
           <div className="flex-1 min-w-0 px-4 md:grid md:grid-cols-2 md:gap-4">
             <div>
@@ -53,6 +59,12 @@ export default function Preview({ nextStep, prevStep, pass, error }) {
               </div>
               <p className="flex items-center mt-2 text-sm text-gray-500">
                 <span className="truncate">{error.sat_name}</span>
+              </p>
+              <p className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                <span className="truncate">Pass on: {error["Pass date"]}</span>
+                <span className="truncate">
+                  Processed on: {error["Processed date"]}
+                </span>
               </p>
             </div>
           </div>
@@ -83,30 +95,56 @@ export default function Preview({ nextStep, prevStep, pass, error }) {
       </div>
       <div className="flex flex-col flex-1 w-full">
         <div className="container flex items-center justify-between w-full gap-5">
-          <img className="flex-1 object-cover w-1/2" src={imageUrl} />
-          <img className="flex-1 object-cover w-1/2" src={errImageUrl} />
+          {/* {imageUrl && (
+            <MagnifyImage
+              imageLink={imageUrl}
+              originalHeight={error.pic_size_h_pix}
+              originalWidth={error.pic_size_w_pix}
+            />
+          )}
+          {errImageUrl && (
+            <MagnifyImage
+              imageLink={errImageUrl}
+              originalHeight={error.pic_size_h_pix}
+              originalWidth={error.pic_size_w_pix}
+            />
+          )} */}
+
+          <img
+            className="flex-1 object-cover w-1/2"
+            src={imageUrl}
+          />
+          <img
+            className="flex-1 object-cover w-1/2"
+            src={errImageUrl}
+          />
         </div>
       </div>
 
       <ul className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 shadow">
-        {Object.entries(error).map(([key, value]) => {
-          return (
-            <li key={key} className="px-4 py-4 sm:px-6">
-              <div className="flex items-center justify-between flex-1 min-w-0">
-                <div className="flex-1 min-w-0 px-4 md:gap-4">
-                  <div>
-                    <div className="flex text-sm font-medium text-gray-900 truncate">
-                      <span className="truncate">{key}</span>
+        {Object.entries(error)
+          .filter(([key]) => !excludeKeys.includes(key))
+          .map(([key, value]) => {
+            return (
+              <li
+                key={key}
+                className="px-4 py-4 sm:px-6"
+              >
+                <div className="flex items-center justify-between flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 px-4 md:gap-4">
+                    <div>
+                      <div className="flex text-sm font-medium text-gray-900 truncate">
+                        <span className="truncate">{key}</span>
+                      </div>
+                      <p className="flex items-center mt-2 text-sm text-gray-500">
+                        <span className="truncate">{value}</span>
+                      </p>
                     </div>
-                    <p className="flex items-center mt-2 text-sm text-gray-500">
-                      <span className="truncate">{value}</span>
-                    </p>
                   </div>
                 </div>
-              </div>
-            </li>
-          );
-        })}
+              </li>
+            );
+          })}
       </ul>
     </div>
   );

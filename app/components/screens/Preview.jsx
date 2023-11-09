@@ -21,7 +21,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(100);
   const [imageUrl, setImageUrl] = useState(null);
-  const [pageNumbers, setPageNumbers] = useState([1]);
+  const [pageNumbers, setPageNumbers] = useState([]);
 
   const calculateFromTo = () => {
     // if (data?.data?.data) {
@@ -120,24 +120,20 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
 
   const handleNext = () => {
     setPage(page + 1);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const handleSetPage = (pageTo) => {
     setPage(pageTo);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const handlePrev = () => {
     setPage(page - 1);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const generatePageNumbers = (currentPage, totalPages) => {
-    const pages = [1];
+    const pages = new Set();
+    pages.add(1);
+
     let startPage = Math.max(2, currentPage - 4);
     let endPage = Math.min(totalPages - 1, currentPage + 4);
 
@@ -148,184 +144,79 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.add(i);
     }
 
-    pages.push(totalPages);
-    return pages;
+    pages.add(totalPages);
+    return pages.size == 0 ? [1] : Array.from(pages);
   };
 
   useEffect(() => {
     fetchPasses();
-  }, []);
+  }, [page]);
 
-  const tableRows = useMemo(
-    () =>
-      data?.data?.data
-        ? data?.data?.data.map((pass, idx) => (
-            <tr
-              className="transition duration-150 ease-in-out cursor-pointer hover:bg-gray-50"
-              onClick={() => {
-                selectError(pass);
-              }}
-              key={idx}
-            >
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.ID}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass["Pass date"]}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass["Processed date"]}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.error_type}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.error_start_time}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.error_end_time}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_loc_h}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_loc_w}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.num_errors_raw}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_error_start_pix}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_error_end_pix}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.pic_size_h_pix}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.pic_size_w_pix}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_count_h}
-              </td>
-              <td
-                className={classNames(
-                  idx !== data?.data?.data.length - 1
-                    ? "border-b border-gray-200"
-                    : "",
-                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                )}
-              >
-                {pass.sub_img_count_w}
-              </td>
-            </tr>
-          ))
-        : null,
-    [data]
-  );
+  const tableRows = useMemo(() => {
+    if (!data?.data?.data) {
+      return null;
+    }
 
+    return data.data.data.map((pass, idx) => {
+      const rowClassNames = classNames(
+        "transition duration-150 ease-in-out cursor-pointer hover:bg-gray-50"
+      );
+      const cellClassNames = classNames(
+        idx !== data?.data?.data.length - 1 ? "border-b border-gray-200" : "",
+
+        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+      );
+
+      return (
+        <tr
+          className={rowClassNames}
+          onClick={() => {
+            selectError(pass);
+          }}
+        >
+          <td className={cellClassNames}>{pass.ID}</td>
+          <td className={cellClassNames}>{pass["Pass date"]}</td>
+          <td className={cellClassNames}>{pass["Processed date"]}</td>
+          <td className={cellClassNames}>{pass.error_type}</td>
+          <td className={cellClassNames}>{pass.error_start_time}</td>
+          <td className={cellClassNames}>{pass.error_end_time}</td>
+          <td className={cellClassNames}>{pass.sub_img_loc_h}</td>
+          <td className={cellClassNames}>{pass.sub_img_loc_w}</td>
+          <td className={cellClassNames}>{pass.num_errors_raw}</td>
+          <td className={cellClassNames}>{pass.sub_img_error_start_pix}</td>
+          <td className={cellClassNames}>{pass.sub_img_error_end_pix}</td>
+          <td className={cellClassNames}>{pass.pic_size_h_pix}</td>
+          <td className={cellClassNames}>{pass.pic_size_w_pix}</td>
+          <td className={cellClassNames}>{pass.sub_img_count_h}</td>
+          <td className={cellClassNames}>{pass.sub_img_count_w}</td>
+        </tr>
+      );
+    });
+  }, [data, selectError]);
+  const tableHeaders = useMemo(() => {
+    if (!data?.data?.data || !data?.data?.data[0]) {
+      return null;
+    }
+
+    return Object.keys(data.data.data[0]).map((key, idx) => {
+      if (excludeKeys.includes(key)) {
+        return null;
+      }
+
+      return (
+        <th
+          key={idx + "th"}
+          scope="col"
+          className="whitespace-nowrap top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
+        >
+          {key}
+        </th>
+      );
+    });
+  }, [data, excludeKeys]);
   return (
     <div className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
       <div className="flex-1 py-5 sm:p-6">
@@ -379,29 +270,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                   <div>
                     <div className="w-full overflow-auto">
                       <table className="border-separate border-spacing-0">
-                        <thead>
-                          <tr>
-                            {
-                              // loop through the data and get the keys
-                              data?.data?.data
-                                ? data?.data?.data[0]
-                                  ? Object.keys(data?.data?.data[0]).map(
-                                      (key, idx) =>
-                                        !excludeKeys.includes(key) ? (
-                                          <th
-                                            key={idx + "th"}
-                                            scope="col"
-                                            className="sticky whitespace-nowrap top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
-                                          >
-                                            {key}
-                                          </th>
-                                        ) : null
-                                    )
-                                  : null
-                                : null
-                            }
-                          </tr>
-                        </thead>
+                        <thead>{tableHeaders}</thead>
                         <tbody>{tableRows}</tbody>
                       </table>
                     </div>

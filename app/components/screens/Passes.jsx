@@ -12,7 +12,7 @@ export default function Locations({
   const [page, setPage] = useState(1);
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(100);
-  const [pageNumbers, setPageNumbers] = useState([1]);
+  const [pageNumbers, setPageNumbers] = useState([]);
 
   const [data, setData] = useState([]);
   const [displayData, setDisplayData] = useState([]);
@@ -111,7 +111,7 @@ export default function Locations({
     fetchPasses();
 
     let tempData = [];
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     fetchPasses();
@@ -127,24 +127,19 @@ export default function Locations({
 
   const handleNext = () => {
     setPage(page + 1);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const handleSetPage = (pageTo) => {
     setPage(pageTo);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const handlePrev = () => {
     setPage(page - 1);
-    calculateFromTo();
-    fetchPasses();
   };
 
   const generatePageNumbers = (currentPage, totalPages) => {
-    const pages = [1];
+    const pages = new Set();
+    pages.add(1);
     let startPage = Math.max(2, currentPage - 4);
     let endPage = Math.min(totalPages - 1, currentPage + 4);
 
@@ -155,11 +150,11 @@ export default function Locations({
     }
 
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
+      pages.add(i);
     }
 
-    pages.push(totalPages);
-    return pages;
+    pages.add(totalPages);
+    return pages.size == 0 ? [1] : Array.from(pages);
   };
 
   return (
