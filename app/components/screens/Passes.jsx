@@ -10,6 +10,10 @@ export default function Locations({
   selectPass = (pass) => {},
 }) {
   const [page, setPage] = useState(1);
+  const [from, setFrom] = useState(1);
+  const [to, setTo] = useState(100);
+  const [pageNumbers, setPageNumbers] = useState([1]);
+
   const [data, setData] = useState([]);
   const [displayData, setDisplayData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +30,7 @@ export default function Locations({
     const baseUrl = "/api/passes";
     const params = {
       page: page,
-      limit: 10,
+      limit: 100,
       sat_name: satalite.id,
       startTime: startDate,
       endTime: endDate,
@@ -85,6 +89,9 @@ export default function Locations({
       setData(passes);
 
       setLoading(false);
+
+      const totalPages = Math.ceil(passes?.count / 100);
+      setPageNumbers(generatePageNumbers(page, totalPages));
     } else {
       setError(await response.json());
       setLoading(false);
@@ -117,6 +124,43 @@ export default function Locations({
 
     let tempData = [];
   }, [endDate]);
+
+  const handleNext = () => {
+    setPage(page + 1);
+    calculateFromTo();
+    fetchPasses();
+  };
+
+  const handleSetPage = (pageTo) => {
+    setPage(pageTo);
+    calculateFromTo();
+    fetchPasses();
+  };
+
+  const handlePrev = () => {
+    setPage(page - 1);
+    calculateFromTo();
+    fetchPasses();
+  };
+
+  const generatePageNumbers = (currentPage, totalPages) => {
+    const pages = [1];
+    let startPage = Math.max(2, currentPage - 4);
+    let endPage = Math.min(totalPages - 1, currentPage + 4);
+
+    if (currentPage <= 5) {
+      endPage = Math.min(totalPages - 1, 9);
+    } else if (currentPage > totalPages - 5) {
+      startPage = Math.max(2, totalPages - 8);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    pages.push(totalPages);
+    return pages;
+  };
 
   return (
     <div className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
@@ -178,7 +222,11 @@ export default function Locations({
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path
+                        stroke="none"
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>
@@ -298,29 +346,60 @@ export default function Locations({
           </div>
         </div>
       </div>
-      <div className="px-4 py-4 sm:px-6">
-        <div className="flex items-center justify-end gap-x-6">
-          {prevStep ? (
-            <button
-              onClick={prevStep}
-              type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Previous
-            </button>
-          ) : null}
-
-          {nextStep ? (
-            <button
-              onClick={nextStep}
-              type="submit"
-              className="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Next
-            </button>
-          ) : null}
+      {data?.passes ? (
+        <div className="px-4 py-4 sm:px-6">
+          <nav
+            className="flex items-center justify-between px-4 py-3 bg-white sm:px-6"
+            aria-label="Pagination"
+          >
+            <div className="hidden sm:block">
+              <p className="text-sm text-gray-700">
+                page <span className="font-bold">{page}</span> of{" "}
+                <span className="font-bold">
+                  {parseInt(data?.count / 100) + 1}
+                </span>{" "}
+                of <span className="font-bold">{data?.count}</span> total
+                results
+              </p>
+            </div>
+            <div className="flex justify-between flex-1 gap-2 sm:justify-end">
+              <button
+                onClick={handlePrev}
+                disabled={page <= 1}
+                className="relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+              >
+                Previous
+              </button>
+              {pageNumbers.map((pageNum, idx) => (
+                <>
+                  {idx > 0 && pageNumbers[idx - 1] < pageNum - 1 && (
+                    <span>...</span>
+                  )}
+                  <button
+                    key={pageNum}
+                    onClick={() => handleSetPage(pageNum)}
+                    disabled={pageNum === page}
+                    className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md ${
+                      pageNum === page
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : ""
+                    } ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0`}
+                  >
+                    {pageNum}
+                  </button>
+                </>
+              ))}
+              <button
+                onClick={handleNext}
+                disabled={page >= data?.count / 100}
+                className="relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+              >
+                Next
+              </button>
+            </div>
+          </nav>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

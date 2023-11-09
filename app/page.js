@@ -13,11 +13,11 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [steps, setSteps] = useState([
-    { id: "Step 1", name: "Select Location" },
-    { id: "Step 2", name: "Select Satellite" },
-    { id: "Step 3", name: "Select Pass" },
-    { id: "Step 4", name: "Select Error" },
-    { id: "Step 5", name: "Preview" },
+    { id: "Step 1", name: "Select Location", breadcrumb: null },
+    { id: "Step 2", name: "Select Satellite", breadcrumb: null },
+    { id: "Step 3", name: "Select Pass", breadcrumb: null },
+    { id: "Step 4", name: "Select Error", breadcrumb: null },
+    { id: "Step 5", name: "Preview", breadcrumb: null },
   ]);
   const { data: session, status, error, isLoading } = useSession();
 
@@ -25,52 +25,20 @@ export default function Home() {
 
   const [locations, setLocations] = useState([
     {
-      id: 1,
+      id: "AOML",
       title: "AOML",
-      description: "Last scan was 2 hours ago",
-      additional: "4 Satellites",
-      satalites: [
-        {
-          id: "NOAA18",
-          title: "NOAA-18",
-          description: "Last pass was 2 hours ago",
-          additional: "1,265 passes",
-          numOfPasses: 3,
-        },
-        {
-          id: "NOAA19",
-          title: "NOAA-19",
-          description: "Last pass was 15 minutes ago",
-          additional: "615 passes",
-          numOfPasses: 4,
-        },
-        {
-          id: "METOP-B",
-          title: "METOP-B",
-          description: "Never scanned",
-          additional: "1,562 passes",
-          numOfPasses: 0,
-        },
-        {
-          id: "METOP-C",
-          title: "METOP-C",
-          description: "Never scanned",
-          additional: "615 passes",
-          numOfPasses: 0,
-        },
-      ],
+      description: null,
+      additional: null,
+      satalites: [],
     },
     {
-      id: 2,
+      id: "Hawaii",
       title: "Hawaii",
-      description: "-",
-      additional: "0 Satalites",
+      description: null,
+      additional: null,
       satalites: [],
     },
   ]);
-
-  const { push } = useRouter();
-
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
 
   const [selectedSatelite, setSelectedSatelite] = useState(
@@ -80,6 +48,67 @@ export default function Home() {
   const [selectedPass, setSelectedPass] = useState(null);
 
   const [selectedError, setSelectedError] = useState(null);
+
+  const fetchLocationData = async () => {
+    const baseUrl = "/api/locations";
+    const locationNames = [];
+    locations.forEach((location) => {
+      locationNames.push(location.title);
+    });
+    const params = {
+      locations: locationNames,
+    };
+    const url = new URL(baseUrl, document.baseURI);
+
+    url.search = new URLSearchParams(params).toString();
+
+    const response = await fetch(url);
+    if (response.ok) {
+      // setData(await response.json());
+
+      // await response.json then execute the following
+      let locationData = await response.json();
+
+      let newLoc = [...locations];
+
+      for (const [key, value] of Object.entries(locationData.response)) {
+        const locIndex = newLoc.findIndex((loc) => loc.title == key);
+        if (locIndex !== -1) {
+          newLoc[locIndex] = { ...newLoc[locIndex], ...value };
+        }
+      }
+
+      setLocations(newLoc);
+
+      setTimeout(() => {
+        setSelectedLocation(locations[0]);
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocationData();
+  }, []);
+
+  useEffect(() => {
+    let stepClone = [...steps];
+    if (selectedLocation) {
+      stepClone[0].breadcrumb = selectedLocation.title;
+    }
+    if (selectedSatelite) {
+      stepClone[1].breadcrumb = selectedSatelite.title;
+    }
+    if (selectedPass) {
+      stepClone[2].breadcrumb = selectedPass.s3_path;
+    }
+    if (selectedError) {
+      stepClone[3].breadcrumb = selectedError.image_name;
+    }
+    console.log(stepClone);
+    setSteps(stepClone);
+  }, [selectedLocation, selectedSatelite, selectedPass, selectedError]);
+
+  const { push } = useRouter();
 
   // set the active step
 

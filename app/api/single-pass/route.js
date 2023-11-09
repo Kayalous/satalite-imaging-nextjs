@@ -7,7 +7,7 @@ import { getQSParamFromURL } from "../../../lib/utils";
 
 const prisma = new PrismaClient();
 
-const pageSize = 10;
+const pageSize = 100;
 
 export async function GET(req, res) {
   let skip = getQSParamFromURL("page", req.url)
@@ -35,7 +35,6 @@ export async function GET(req, res) {
       },
     }),
   ]);
-
 
   const data = {
     count: trans[0],

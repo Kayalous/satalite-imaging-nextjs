@@ -6,12 +6,12 @@ import { getQSParamFromURL } from "../../../lib/utils";
 
 const prisma = new PrismaClient();
 
-const pageSize = 20;
+const pageSize = 100;
 
 export async function GET(req, res) {
-  // let skip = getQSParamFromURL("page", req.url)
-  //   ? getQSParamFromURL("page", req.url) * pageSize
-  //   : 0;
+  let skip = getQSParamFromURL("page", req.url)
+    ? (getQSParamFromURL("page", req.url) - 1) * pageSize
+    : 0;
 
   let sat_name = getQSParamFromURL("sat_name", req.url);
 
@@ -20,37 +20,50 @@ export async function GET(req, res) {
   let startTime =
     new Date(getQSParamFromURL("startTime", req.url)) ??
     new Date(today.getTime() - 15 * 24 * 60 * 60 * 1000);
-  let endTime =
-    new Date(getQSParamFromURL("endTime", req.url)) ??
-    new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
-
-  console.log(startTime, endTime);
-
-  let passes = await prisma.ml_localization.groupBy({
-    by: ["image_name", "s3_path", "Pass_Date"],
-    where: {
-      sat_name: {
-        equals: sat_name,
+  let endTime = new Date(getQSParamFromURL("endTime", req.url));
+  if (endTime) {
+    endTime.setHours(23, 59, 59, 999);
+  } else {
+    endTime = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
+    endTime.setHours(23, 59, 59, 999);
+  }
+  const count = await prisma.$queryRaw`
+  SELECT image_name, s3_path, Pass_Date, COUNT(*) as total
+  FROM ml_localization
+  WHERE sat_name = ${sat_name} AND Pass_Date BETWEEN ${startTime} AND ${endTime}
+  GROUP BY image_name, s3_path, Pass_Date`;
+  const trans = await prisma.$transaction([
+    prisma.ml_localization.groupBy({
+      by: ["image_name", "s3_path", "Pass_Date"],
+      skip: skip,
+      take: pageSize,
+      where: {
+        sat_name: {
+          equals: sat_name,
+        },
+        AND: [
+          {
+            Pass_Date: {
+              gte: startTime,
+            },
+          },
+          {
+            Pass_Date: {
+              lte: endTime,
+            },
+          },
+        ],
       },
-      AND: [
-        {
-          Pass_Date: {
-            gte: startTime,
-          },
-        },
-        {
-          Pass_Date: {
-            lte: endTime,
-          },
-        },
-      ],
-    },
-    orderBy: {
-      Pass_Date: "desc",
-    },
-  });
+      orderBy: {
+        Pass_Date: "desc",
+      },
+    }),
+  ]);
+
+  console.log(count);
 
   return NextResponse.json({
-    passes,
+    count: 1,
+    passes: trans[0],
   });
 }

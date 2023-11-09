@@ -23,7 +23,7 @@ export default function Locations({
 
   useEffect(() => {
     onSelectedLocation(selectedLocation);
-  }, []);
+  }, [locations]);
 
   return (
     <div className="flex flex-col flex-1 w-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
@@ -71,7 +71,7 @@ export default function Locations({
                             as="span"
                             className="mt-6 text-sm font-medium text-gray-900"
                           >
-                            {location.satalites.length} Satellites
+                            {location.additional}
                           </RadioGroup.Description>
                         </span>
                       </span>

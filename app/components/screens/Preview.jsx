@@ -1,9 +1,10 @@
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { constructS3Url, constructMainEC2Url } from "../../../lib/utils";
 import moment from "moment";
+import Magnify from "../Magnify";
 export default function Preview({ nextStep, prevStep, pass, selectError }) {
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
@@ -18,15 +19,16 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     "Pass_Date",
   ];
   const [from, setFrom] = useState(1);
-  const [to, setTo] = useState(20);
+  const [to, setTo] = useState(100);
   const [imageUrl, setImageUrl] = useState(null);
+  const [pageNumbers, setPageNumbers] = useState([1]);
 
   const calculateFromTo = () => {
     // if (data?.data?.data) {
-    const fromCalc = (page - 1) * 10 + 1;
+    const fromCalc = (page - 1) * 100 + 1;
     setFrom(fromCalc);
 
-    const toFactor = data?.data?.data.length ?? 20;
+    const toFactor = data?.data?.data.length ?? 100;
 
     const toCalc = fromCalc + toFactor - 1;
     setTo(toCalc);
@@ -49,9 +51,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     if (response.ok) {
       let resData = await response.json();
 
-      console.log(resData);
-
-
       resData.data.data = resData.data.data.map((item, index) => {
         // item.s3_path = constructS3Url(item.s3_path, item.image_name);
 
@@ -66,7 +65,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         ).format("MM/DD/YYYY h:mm:ss a");
 
         // console.log(error_start_time, error_end_time);
-
 
         //@ts-ignore
         resData.data.data[index]["error_start_time"] = error_start_time;
@@ -102,8 +100,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         ...resData,
       });
 
-      console.log(data?.data?.data);
-
       setTimeout(() => {
         const url = constructMainEC2Url(
           resData?.data?.data[0].s3_path,
@@ -111,6 +107,9 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
         );
         setImageUrl(url);
       }, 800);
+
+      const totalPages = Math.ceil(resData?.data?.count / 100);
+      setPageNumbers(generatePageNumbers(page, totalPages));
 
       setLoading(false);
     } else {
@@ -125,15 +124,207 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     fetchPasses();
   };
 
+  const handleSetPage = (pageTo) => {
+    setPage(pageTo);
+    calculateFromTo();
+    fetchPasses();
+  };
+
   const handlePrev = () => {
     setPage(page - 1);
     calculateFromTo();
     fetchPasses();
   };
 
+  const generatePageNumbers = (currentPage, totalPages) => {
+    const pages = [1];
+    let startPage = Math.max(2, currentPage - 4);
+    let endPage = Math.min(totalPages - 1, currentPage + 4);
+
+    if (currentPage <= 5) {
+      endPage = Math.min(totalPages - 1, 9);
+    } else if (currentPage > totalPages - 5) {
+      startPage = Math.max(2, totalPages - 8);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    pages.push(totalPages);
+    return pages;
+  };
+
   useEffect(() => {
     fetchPasses();
   }, []);
+
+  const tableRows = useMemo(
+    () =>
+      data?.data?.data
+        ? data?.data?.data.map((pass, idx) => (
+            <tr
+              className="transition duration-150 ease-in-out cursor-pointer hover:bg-gray-50"
+              onClick={() => {
+                selectError(pass);
+              }}
+              key={idx}
+            >
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.ID}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass["Pass date"]}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass["Processed date"]}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.error_type}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.error_start_time}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.error_end_time}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_loc_h}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_loc_w}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.num_errors_raw}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_error_start_pix}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_error_end_pix}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.pic_size_h_pix}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.pic_size_w_pix}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_count_h}
+              </td>
+              <td
+                className={classNames(
+                  idx !== data?.data?.data.length - 1
+                    ? "border-b border-gray-200"
+                    : "",
+                  "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
+                )}
+              >
+                {pass.sub_img_count_w}
+              </td>
+            </tr>
+          ))
+        : null,
+    [data]
+  );
 
   return (
     <div className="flex flex-col flex-1 w-full max-h-full overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
@@ -154,10 +345,10 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
               <div className="relative inline-block w-full max-w-full py-2 align-middle">
                 {imageUrl ? (
                   <div className="container flex items-center justify-center py-5 mx-auto">
-                    <img
-                      src={imageUrl}
-                      alt="Fixed image"
-                      className="object-cover w-full max-w-2xl overflow-hidden rounded-sm"
+                    <Magnify
+                      imageLink={imageUrl}
+                      originalHeight={pass.pic_size_h_pix}
+                      originalWidth={pass.pic_size_w_pix}
                     />
                   </div>
                 ) : null}
@@ -193,256 +384,25 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                             {
                               // loop through the data and get the keys
                               data?.data?.data
-                                ? 
-                                data?.data?.data[0] ?
-                                Object.keys(data?.data?.data[0]).map(
-                                    (key, idx) =>
-                                      !excludeKeys.includes(key) ? (
-                                        <th
-                                          key={idx + "th"}
-                                          scope="col"
-                                          className="sticky whitespace-nowrap top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
-                                        >
-                                          {key}
-                                        </th>
-                                      ) : null
-                                  ) : null
+                                ? data?.data?.data[0]
+                                  ? Object.keys(data?.data?.data[0]).map(
+                                      (key, idx) =>
+                                        !excludeKeys.includes(key) ? (
+                                          <th
+                                            key={idx + "th"}
+                                            scope="col"
+                                            className="sticky whitespace-nowrap top-0 z-10 border-b border-gray-300 bg-white bg-opacity-75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                                          >
+                                            {key}
+                                          </th>
+                                        ) : null
+                                    )
+                                  : null
                                 : null
                             }
                           </tr>
                         </thead>
-                        <tbody>
-                          {
-                            // loop through the data and get the values
-                            data?.data?.data
-                              ? data?.data?.data.map((pass, idx) => (
-                                  <tr
-                                    className="transition duration-150 ease-in-out cursor-pointer hover:bg-gray-50"
-                                    onClick={() => {
-                                      selectError(pass);
-                                    }}
-                                    key={idx}
-                                  >
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.ID}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass["Pass date"]}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass["Processed date"]}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.error_type}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.error_start_time}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.error_end_time}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_loc_h}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_loc_w}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.num_errors_raw}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_error_start_pix}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_error_end_pix}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.pic_size_h_pix}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.pic_size_w_pix}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_count_h}
-                                    </td>
-                                    <td
-                                      className={classNames(
-                                        idx !== data?.data?.data.length - 1
-                                          ? "border-b border-gray-200"
-                                          : "",
-                                        "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                      )}
-                                    >
-                                      {pass.sub_img_count_w}
-                                    </td>
-
-                                    {/* <td
-                                    className={classNames(
-                                      idx !== data?.data?.data.length - 1
-                                        ? "border-b border-gray-200"
-                                        : "",
-                                      "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                                    )}
-                                  >
-                                    {value}
-                                  </td> */}
-                                  </tr>
-                                ))
-                              : null
-                          }
-
-                          {/* {data?.passes?.map((pass, idx) => (
-                        <tr key={idx}>
-                          <td
-                            className={classNames(
-                              idx !== data.passes.length - 1
-                                ? "border-b border-gray-200"
-                                : "",
-                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                            )}
-                          >
-                            {pass.image_name}
-                          </td>
-                          <td
-                            className={classNames(
-                              idx !== data.passes.length - 1
-                                ? "border-b border-gray-200"
-                                : "",
-                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                            )}
-                          >
-                            {pass.error_start_time}
-                          </td>
-                          <td
-                            className={classNames(
-                              idx !== data.passes.length - 1
-                                ? "border-b border-gray-200"
-                                : "",
-                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                            )}
-                          >
-                            {pass.error_end_time}
-                          </td>
-                          <td
-                            className={classNames(
-                              idx !== data.passes.length - 1
-                                ? "border-b border-gray-200"
-                                : "",
-                              "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
-                            )}
-                          >
-                            <button
-                              onClick={() => {
-                                selectPass(pass);
-                                // setPass(pass);
-                                // setModal(true);
-                              }}
-                              className="text-indigo-600 hover:text-indigo-900"
-                            >
-                              View
-                            </button>
-                          </td>
-                        </tr>
-                      ))} */}
-                        </tbody>
+                        <tbody>{tableRows}</tbody>
                       </table>
                     </div>
                   </div>
@@ -462,13 +422,13 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
               <p className="text-sm text-gray-700">
                 page <span className="font-bold">{page}</span> of{" "}
                 <span className="font-bold">
-                  {parseInt(data?.data?.count / 20)}
+                  {parseInt(data?.data?.count / 100) + 1}
                 </span>{" "}
                 of <span className="font-bold">{data?.data?.count}</span> total
                 results
               </p>
             </div>
-            <div className="flex justify-between flex-1 sm:justify-end">
+            <div className="flex justify-between flex-1 gap-2 sm:justify-end">
               <button
                 onClick={handlePrev}
                 disabled={page <= 1}
@@ -476,10 +436,29 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
               >
                 Previous
               </button>
+              {pageNumbers.map((pageNum, idx) => (
+                <>
+                  {idx > 0 && pageNumbers[idx - 1] < pageNum - 1 && (
+                    <span>...</span>
+                  )}
+                  <button
+                    key={pageNum}
+                    onClick={() => handleSetPage(pageNum)}
+                    disabled={pageNum === page}
+                    className={`relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md ${
+                      pageNum === page
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : ""
+                    } ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0`}
+                  >
+                    {pageNum}
+                  </button>
+                </>
+              ))}
               <button
                 onClick={handleNext}
-                disabled={page >= data?.data?.count / 20}
-                className="relative inline-flex items-center px-3 py-2 ml-3 text-sm font-semibold text-gray-900 bg-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+                disabled={page >= data?.data?.count / 100}
+                className="relative inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
               >
                 Next
               </button>

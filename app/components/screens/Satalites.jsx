@@ -36,12 +36,6 @@ export default function Satalites({
             Select a satellite
           </RadioGroup.Label>
 
-          {/* <img
-            className="w-32 h-32"
-            src="/api/assets?path=stand_alone/AOML/NOAA18/operation/processed_images/20210930152049n02_2023-07-17-18:10:13/localized_processed/20210930152049n02_2023-07-17-18:10:13_with_localization.png"
-            alt=""
-          /> */}
-
           {satalites.length > 0 ? (
             <div className="grid grid-cols-1 mt-4 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
               {satalites.map((satalite) => (
