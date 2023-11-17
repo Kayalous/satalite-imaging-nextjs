@@ -8,12 +8,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function Satalites({
-  satalites = [],
+  satellites = [],
   nextStep,
   prevStep,
   onSelectedSatelite,
 }) {
-  const [selectedSatalite, setSelectedSatalite] = useState(satalites[0]);
+  const [selectedSatalite, setSelectedSatalite] = useState(satellites[0]);
 
   const handleSelectedSatelite = (satalite) => {
     setSelectedSatalite(satalite);
@@ -36,9 +36,9 @@ export default function Satalites({
             Select a satellite
           </RadioGroup.Label>
 
-          {satalites.length > 0 ? (
+          {satellites.length > 0 ? (
             <div className="grid grid-cols-1 mt-4 gap-y-6 sm:grid-cols-3 sm:gap-x-4">
-              {satalites.map((satalite) => (
+              {satellites.map((satalite) => (
                 <RadioGroup.Option
                   key={satalite.id}
                   value={satalite}
@@ -70,10 +70,10 @@ export default function Satalites({
                             as="span"
                             className="mt-6 text-sm font-medium text-gray-900"
                           >
-                            {new Intl.NumberFormat().format(
-                              satalite.numOfPasses
-                            )}{" "}
-                            Passes
+                            {/* {new Intl.NumberFormat().format( */}
+                            {satalite.additional}
+                            {/* )}{" "} */}
+                            {/* Pass(es) */}
                           </RadioGroup.Description>
                         </span>
                       </span>

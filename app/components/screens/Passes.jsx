@@ -3,6 +3,9 @@ function classNames(...classes) {
 }
 import { useState, useEffect, use } from "react";
 import moment from "moment";
+import Placeholder from "../../undraw_outer_space_re_u9vd.svg";
+import Image from "next/image";
+
 export default function Locations({
   nextStep,
   prevStep,
@@ -24,6 +27,15 @@ export default function Locations({
   const [endDate, setEndDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const applyStartDate = (date) => {
+    setStartDate(new Date(date).toISOString().split("T")[0]);
+    // fetchPasses();
+  };
+  const applyEndDate = (date) => {
+    setEndDate(new Date(date).toISOString().split("T")[0]);
+    // fetchPasses();
+  };
 
   const fetchPasses = async () => {
     setLoading(true);
@@ -98,15 +110,6 @@ export default function Locations({
     }
   };
 
-  const applyStartDate = (date) => {
-    setStartDate(new Date(date).toISOString().split("T")[0]);
-    // fetchPasses();
-  };
-  const applyEndDate = (date) => {
-    setEndDate(new Date(date).toISOString().split("T")[0]);
-    // fetchPasses();
-  };
-
   useEffect(() => {
     fetchPasses();
 
@@ -172,6 +175,7 @@ export default function Locations({
             </div>
             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
               <div className="flex items-center">
+                <span className="mx-4 text-gray-500">Pass Date:</span>
                 <div className="relative">
                   <input
                     name="start"
@@ -225,7 +229,7 @@ export default function Locations({
                       <path d="M12 3a9 9 0 1 0 9 9" />
                     </svg>
                   </div>
-                ) : (
+                ) : data?.count > 0 ? (
                   <table className="min-w-full border-separate border-spacing-0">
                     <thead>
                       <tr>
@@ -335,13 +339,24 @@ export default function Locations({
                       ))}
                     </tbody>
                   </table>
+                ) : (
+                  <div className="flex flex-col items-center justify-center flex-1 gap-10 h-96">
+                    <p className="text-lg font-bold text-center text-gray-600">
+                      No passes here
+                    </p>
+                    <Image
+                      src={Placeholder}
+                      alt="illustration"
+                      className="object-contain w-full max-h-48"
+                    />
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      {data?.passes ? (
+      {data?.passes && data?.count > 0 ? (
         <div className="px-4 py-4 sm:px-6">
           <nav
             className="flex items-center justify-between px-4 py-3 bg-white sm:px-6"

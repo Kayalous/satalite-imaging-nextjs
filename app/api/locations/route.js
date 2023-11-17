@@ -9,69 +9,97 @@ const prisma = new PrismaClient();
 
 const pageSize = 100;
 
+// Helper function to get location data
+async function getLocationData(location) {
+  return await prisma.ml_localization.groupBy({
+    by: ["sat_name"],
+    where: {
+      s3_path: {
+        contains: location,
+      },
+    },
+    _count: {
+      _all: true,
+    },
+  });
+}
+
+// Helper function to get satellite data
+async function getSatData(satNames) {
+  const findManyTransactions = satNames.map((sat_name) =>
+    prisma.ml_localization.findMany({
+      where: {
+        sat_name: sat_name,
+      },
+      orderBy: {
+        Pass_Date: "desc",
+      },
+      take: 1,
+    })
+  );
+
+  const groupByTransactions = satNames.map((sat_name) =>
+    prisma.ml_localization.groupBy({
+      by: ["image_name", "s3_path", "Pass_Date"],
+      where: {
+        sat_name: {
+          equals: sat_name,
+        },
+      },
+      orderBy: {
+        Pass_Date: "desc",
+      },
+    })
+  );
+
+  const findManyResults = await Promise.all(findManyTransactions);
+  const groupByResults = await Promise.all(groupByTransactions);
+  return { findManyResults, groupByResults };
+}
+
+// Helper function to create satellite object
+function createSatellite(e, locationData, groupByResult) {
+  const locationDataItem = locationData.find(
+    (item) => item.sat_name === e[0].sat_name
+  );
+  const numOfErrors = locationDataItem ? locationDataItem._count._all : 0;
+
+  const numOfPasses = groupByResult.length ?? 0;
+
+  return {
+    id: e[0].sat_name,
+    title: e[0].sat_name,
+    description: e[0].Pass_Date
+      ? "Last pass was " +
+        moment(e[0].Pass_Date, "YYYY-MM-DD-HH:mm:ss").fromNow()
+      : "No passes yet.",
+    additional: `${numOfErrors} Error(s), ${numOfPasses} Pass(es)`,
+    numOfPasses: numOfPasses,
+  };
+}
+
 export async function GET(req, res) {
-  // let skip = getQSParamFromURL("page", req.url)
-  //   ? getQSParamFromURL("page", req.url) * pageSize
-  //   : 0;
-
   let locations = getQSParamFromURL("locations", req.url).split(",");
-
   let response = {};
 
   let locationPromises = locations.map(async (location) => {
-    let locationData = await prisma.ml_localization.groupBy({
-      by: ["sat_name"],
-      where: {
-        s3_path: {
-          contains: location,
-        },
-      },
-      _count: {
-        _all: true,
-      },
-    });
-
+    let locationData = await getLocationData(location);
     let lastLocationDate = null;
-
     let satNames = locationData.map((item) => item.sat_name);
+    let { findManyResults, groupByResults } = await getSatData(satNames);
+    // let lastEntries = await Promise.all(satDataPromises);
 
-    let satDataPromises = satNames.map((sat_name) => {
-      return prisma.ml_localization.findMany({
-        where: {
-          sat_name: sat_name,
-        },
-        orderBy: {
-          Pass_Date: "desc",
-        },
-        take: 1,
-      });
-    });
+    let satellites = findManyResults.map((e, i) => {
+      const groupByResult = groupByResults[i];
 
-    let lastEntries = await Promise.all(satDataPromises);
-
-    let satalites = lastEntries.map((e) => {
-      const locationDataItem = locationData.find(
-        (item) => item.sat_name === e[0].sat_name
-      );
-      const numOfPasses = locationDataItem ? locationDataItem._count._all : 0;
-
+      let satellite = createSatellite(e, locationData, groupByResult);
       if (
         !lastLocationDate ||
         moment(e[0].Pass_Date, "YYYY-MM-DD-HH:mm:ss").isAfter(lastLocationDate)
       ) {
         lastLocationDate = e[0].Pass_Date;
       }
-
-      return {
-        id: e[0].sat_name,
-        title: e[0].sat_name,
-        description: e[0].Pass_Date
-          ? "Last pass was " +
-            moment(e[0].Pass_Date, "YYYY-MM-DD-HH:mm:ss").fromNow()
-          : "No passes yet.",
-        additional: numOfPasses + " Passes",
-        numOfPasses: numOfPasses,
-      };
+      return satellite;
     });
 
     response[location] = {
@@ -82,7 +110,7 @@ export async function GET(req, res) {
           moment(lastLocationDate, "YYYY-MM-DD-HH:mm:ss").fromNow()
         : "No passes yet.",
       additional: locationData.length + " Satellites",
-      satalites,
+      satellites,
     };
   });
 
@@ -90,6 +118,5 @@ export async function GET(req, res) {
 
   return NextResponse.json({
     response,
-    // passes,
   });
 }

@@ -18,6 +18,7 @@ export default function Locations({
 
   const handleSelectedLocation = (location) => {
     if (!location) return;
+    console.log(location);
     setSelectedLocation(location);
     onSelectedLocation(location);
   };

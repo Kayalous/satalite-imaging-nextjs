@@ -53,11 +53,13 @@ const MagnifyImage = ({ imageLink, originalWidth, originalHeight }) => {
           )}
         </div>
         {isHovered && (
-          <div className={`magnified-image-container absolute left-full top-0`}>
+          <div
+            className={`magnified-image-container absolute left-full top-1/2 -translate-y-1/2`}
+          >
             <img
               src={imageLink}
               alt="Magnified"
-              className="magnified-image"
+              className="border border-gray-200 magnified-image"
               style={{
                 transform: isHovered
                   ? `scale(2) translate(-${

@@ -142,6 +142,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   overflow: hidden;
   width: 300px;
   height: 300px;
+  border: 1px solid #00000055;
 }
 
 .magnified-image {

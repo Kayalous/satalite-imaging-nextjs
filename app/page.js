@@ -29,20 +29,20 @@ export default function Home() {
       title: "AOML",
       description: null,
       additional: null,
-      satalites: [],
+      satellites: [],
     },
     {
       id: "Hawaii",
       title: "Hawaii",
       description: null,
       additional: null,
-      satalites: [],
+      satellites: [],
     },
   ]);
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
 
   const [selectedSatelite, setSelectedSatelite] = useState(
-    selectedLocation.satalites[0]
+    selectedLocation.satellites[0]
   );
 
   const [selectedPass, setSelectedPass] = useState(null);
@@ -168,7 +168,7 @@ export default function Home() {
       case 1:
         return (
           <Satalites
-            satalites={selectedLocation.satalites}
+            satellites={selectedLocation.satellites}
             nextStep={nextStep}
             prevStep={prevStep}
             onSelectedSatelite={onSelectedSatelite}
