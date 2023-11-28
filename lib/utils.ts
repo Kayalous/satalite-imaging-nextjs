@@ -19,7 +19,7 @@ export function constructS3Url(path, name) {
   const testBucketName = "rfims-ml-addson";
   const liveBucketName = "rfims-prototype";
 
-  const baseUrl = `https://s3.us-east-1.amazonaws.com/${liveBucketName}/stand_alone/`;
+  const baseUrl = `https://s3.us-east-1.amazonaws.com/${testBucketName}/stand_alone/`;
 
   const middle = "/localized_processed/";
 

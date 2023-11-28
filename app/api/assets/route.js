@@ -13,12 +13,13 @@ export async function GET(req, res) {
 
   try {
     const command = new GetObjectCommand({
-      Bucket: "rfims-prototype",
+      // Bucket: "rfims-prototype",
+      Bucket: "rfims-ml-addson",
       Key: path,
     });
 
     const client = new S3Client({
-      region: "us-gov-west-1",
+      region: "us-east-1",
     });
 
     const response = await client.send(command);
@@ -40,11 +41,12 @@ export async function GET(req, res) {
         params: {
           path: path,
           command: {
-            Bucket: "rfims-prototype",
+            // Bucket: "rfims-prototype",
+            Bucket: "rfims-ml-addson",
             Key: path,
           },
           client: {
-            region: "us-gov-west-1",
+            region: "us-east-1",
           },
         },
         awsError: error, // Include the actual error object from AWS
