@@ -38,6 +38,13 @@ export default function Home() {
       additional: null,
       satellites: [],
     },
+    {
+      id: "table_mountain",
+      title: "Mountain",
+      description: null,
+      additional: null,
+      satellites: [],
+    },
   ]);
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
 
