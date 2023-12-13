@@ -64,3 +64,60 @@ model ml_localization_rf_events {
   station                 String?   @db.VarChar(100)
   RF_event_type           String?   @db.VarChar(100)
 }
+
+model ml_localization {
+  ID                      Int       @id @default(autoincrement())
+  image_name              String?   @db.VarChar(100)
+  error_type              String?   @db.VarChar(100)
+  pic_size_h_pix          Int?
+  pic_size_w_pix          Int?
+  sub_img_count_h         Int?
+  sub_img_count_w         Int?
+  sub_img_loc_h           Int?
+  sub_img_loc_w           Int?
+  num_errors_raw          Int?
+  sub_img_error_start_pix String?   @db.Text
+  sub_img_error_end_pix   String?   @db.Text
+  error_start_time        DateTime? @db.DateTime(0)
+  error_end_time          DateTime? @db.DateTime(0)
+  s3_path                 String?   @db.VarChar(300)
+  original_img            String?   @db.VarChar(100)
+  sat_name                String?   @db.VarChar(100)
+  local_folder_name       String?   @db.VarChar(2000)
+  Pass_Date               DateTime? @db.DateTime(0)
+  has_error               Boolean?
+}
+
+model rf_events {
+  id                  Int      @id @default(autoincrement())
+  PCI                 Int?
+  beam                String?  @db.VarChar(255)
+  carrierID           String?  @db.VarChar(255)
+  cellID              String?  @db.VarChar(255)
+  eNodeB              String?  @db.VarChar(255)
+  elevationAngle      Float?   @db.Float
+  elevationAngleUnits String?  @db.VarChar(255)
+  eventID             String?  @db.VarChar(50)
+  headingAzimuth      Float?   @db.Float
+  headingAzimuthUnits String?  @db.VarChar(255)
+  inverseAxialRatio   Float?   @db.Float
+  labels              Json?
+  locationLat         Float?
+  locationLatUnits    String?  @db.VarChar(255)
+  locationLon         Float?
+  locationLonUnits    String?  @db.VarChar(255)
+  maxBandwidth        Int?
+  maxBandwidthUnits   String?  @db.VarChar(255)
+  maxFrequency        Float?
+  maxFrequencyUnits   String?  @db.VarChar(255)
+  maxPower            Float?
+  maxPowerUnits       String?  @db.VarChar(255)
+  mode                String?  @db.VarChar(255)
+  notifyCarrier       Boolean?
+  remoteID            Int?
+  severityLevel       String?  @db.VarChar(255)
+  signalType          String?  @db.VarChar(255)
+  tiltAngle           Float?   @db.Float
+  tiltAngleUnits      String?  @db.VarChar(255)
+  timestamp           String?  @db.VarChar(24)
+}
