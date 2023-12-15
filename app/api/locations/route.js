@@ -11,7 +11,7 @@ const pageSize = 100;
 
 // Helper function to get location data
 async function getLocationData(location) {
-  return await prisma.ml_localization.groupBy({
+  return await prisma.ml_localization_rf_events.groupBy({
     by: ["sat_name"],
     where: {
       s3_path: {
@@ -27,7 +27,7 @@ async function getLocationData(location) {
 // Helper function to get satellite data
 async function getSatData(satNames) {
   const findManyTransactions = satNames.map((sat_name) =>
-    prisma.ml_localization.findMany({
+    prisma.ml_localization_rf_events.findMany({
       where: {
         sat_name: sat_name,
       },
@@ -39,7 +39,7 @@ async function getSatData(satNames) {
   );
 
   const groupByTransactions = satNames.map((sat_name) =>
-    prisma.ml_localization.groupBy({
+    prisma.ml_localization_rf_events.groupBy({
       by: ["image_name", "s3_path", "Pass_Date"],
       where: {
         sat_name: {
