@@ -307,7 +307,9 @@ export default function Locations({
                               "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8"
                             )}
                           >
-                            {pass.passDate}
+                            {pass.passDate == "Invalid date"
+                              ? "N/A"
+                              : pass.passDate}
                           </td>
                           <td
                             className={classNames(
@@ -327,7 +329,7 @@ export default function Locations({
                               "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8 overflow-ellipsis line-clamp-1"
                             )}
                           >
-                            {pass.s3_path}
+                            {pass.s3_path ?? "N/A"}
                           </td>
                           {/* <td
                             className={classNames(

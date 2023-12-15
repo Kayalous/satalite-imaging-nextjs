@@ -245,7 +245,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       if (key === "has_error") {
         return pass[key] ? "Yes" : "No";
       }
-      return pass[key] ?? "N/A";
+      return pass[key] === "Invalid date" ? "N/A" : pass[key] ?? "N/A";
     };
     const passKeys = [
       "ID",

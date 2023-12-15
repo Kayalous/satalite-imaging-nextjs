@@ -40,14 +40,28 @@ export async function GET(req, res) {
         },
         AND: [
           {
-            Pass_Date: {
-              gte: startTime,
-            },
+            OR: [
+              {
+                Pass_Date: {
+                  gte: startTime,
+                },
+              },
+              {
+                Pass_Date: null,
+              },
+            ],
           },
           {
-            Pass_Date: {
-              lte: endTime,
-            },
+            OR: [
+              {
+                Pass_Date: {
+                  lte: endTime,
+                },
+              },
+              {
+                Pass_Date: null,
+              },
+            ],
           },
           {
             has_error: has_error !== "all" ? has_error === "true" : undefined,
@@ -66,14 +80,28 @@ export async function GET(req, res) {
         },
         AND: [
           {
-            Pass_Date: {
-              gte: startTime,
-            },
+            OR: [
+              {
+                Pass_Date: {
+                  gte: startTime,
+                },
+              },
+              {
+                Pass_Date: null,
+              },
+            ],
           },
           {
-            Pass_Date: {
-              lte: endTime,
-            },
+            OR: [
+              {
+                Pass_Date: {
+                  lte: endTime,
+                },
+              },
+              {
+                Pass_Date: null,
+              },
+            ],
           },
           {
             has_error: has_error !== "all" ? has_error === "true" : undefined,
