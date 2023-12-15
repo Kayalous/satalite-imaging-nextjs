@@ -40,7 +40,7 @@ export default function Home() {
     },
     {
       id: "table_mountain",
-      title: "Mountain",
+      title: "Table Mountain",
       description: null,
       additional: null,
       satellites: [],
@@ -198,19 +198,9 @@ export default function Home() {
           />
         );
       case 4:
-        return (
-          <SingleError
-            error={selectedError}
-            prevStep={prevStep}
-          />
-        );
+        return <SingleError error={selectedError} prevStep={prevStep} />;
       default:
-        return (
-          <Locations
-            locations={locations}
-            nextStep={nextStep}
-          />
-        );
+        return <Locations locations={locations} nextStep={nextStep} />;
     }
   };
   if (isLoading) return <div>Loading...</div>;

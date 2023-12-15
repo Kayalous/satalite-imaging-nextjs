@@ -249,6 +249,10 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
     };
     const passKeys = [
       "ID",
+      "station",
+      "Error_Source",
+      "RF_event_type",
+      "time_stamp",
       "s3_path",
       "image_name",
       "Pass date",
@@ -270,10 +274,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       "sat_name",
       "local_folder_name",
       "Pass_Date",
-      "time_stamp",
-      "Error_Source",
-      "station",
-      "RF_event_type",
       "has_error",
       "PCI",
       "id",
@@ -342,6 +342,10 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
 
     const passKeys = [
       "ID",
+      "station",
+      "Error_Source",
+      "RF_event_type",
+      "time_stamp",
       "s3_path",
       "image_name",
       "Pass date",
@@ -363,10 +367,6 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
       "sat_name",
       "local_folder_name",
       "Pass_Date",
-      "time_stamp",
-      "Error_Source",
-      "station",
-      "RF_event_type",
       "has_error",
       "PCI",
       "id",
@@ -476,7 +476,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                         />
                       </div>
                     </div>
-                    <div className="flex flex-col gap-1">
+                    {/* <div className="flex flex-col gap-1">
                       <label
                         className="text-gray-500"
                         htmlFor="hasError"
@@ -498,7 +498,7 @@ export default function Preview({ nextStep, prevStep, pass, selectError }) {
                           <option value={false}>No</option>
                         </select>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="flex flex-col gap-1">
                       <label
                         className="text-gray-500"
