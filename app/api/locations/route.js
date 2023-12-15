@@ -14,9 +14,7 @@ async function getLocationData(location) {
   return await prisma.ml_localization_rf_events.groupBy({
     by: ["sat_name"],
     where: {
-      s3_path: {
-        contains: location,
-      },
+      station: location,
     },
     _count: {
       _all: true,
